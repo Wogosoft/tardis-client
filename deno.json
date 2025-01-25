@@ -1,9 +1,15 @@
 {
   "version": "0.0.1",
   "name": "@wogo/tardis-client",
-  "exports": "./gen",
-  "tasks": {
-    "build": "npx @bufbuild/buf generate"
+  "license": "GPL-3.0-only",
+  "exports": "./mod.ts",
+  "publish": {
+    "include": ["./gen/wogo/tardis", "./mod.ts"]
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["ban-types"]
+    }
   },
   "imports": {
     "@bufbuild/protobuf": "npm:@bufbuild/protobuf@^2.2.3",

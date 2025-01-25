@@ -138,9 +138,13 @@
   "workspace": {
     "dependencies": [
       "npm:@bufbuild/protobuf@^2.2.3",
-      "npm:@bufbuild/protoc-gen-es@^2.2.3",
-      "npm:@connectrpc/connect-query@^2.0.1",
-      "npm:@connectrpc/protoc-gen-connect-query@^2.0.1"
-    ]
+      "npm:@connectrpc/connect-query@^2.0.1"
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:@bufbuild/protoc-gen-es@^2.2.3",
+        "npm:@connectrpc/protoc-gen-connect-query@^2.0.1"
+      ]
+    }
   }
 }

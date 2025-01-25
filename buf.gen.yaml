@@ -1,15 +1,14 @@
 version: v2
 plugins:
   - local: protoc-gen-es
-    out: gen/
+    out: ./gen
     opt: 
     - target=ts
     - import_extension=ts
   - local: protoc-gen-connect-query
-    out: gen/
+    out: ./gen
     opt: 
     - target=ts
     - import_extension=ts
 inputs:
   - directory: proto
-clean: true
