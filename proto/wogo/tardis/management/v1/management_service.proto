@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package wogo.tardis.management.v1;
+
+import "wogo/tardis/management/v1/management_messages.proto";
+
+/**
+ * ParkingService handles operations related to creating/updating
+ * a parking entity, listing current vehicles, and viewing reservation history.
+ *
+ * Note: Parking ID can be derived from gRPC metadata or context,
+ * so it’s omitted from many requests.
+ */
+service ParkingManagementService {
+  /**
+   * 1) AddNewParking
+   * Creates a new parking. Parking ID is generated.
+   */
+  rpc AddNewParking(AddNewParkingRequest) returns (AddNewParkingResponse);
+
+  /**
+   * 2) UpdateParkingMetadata
+   * Updates the parking's metadata (name, address, etc.).
+   * Parking ID may be inferred from gRPC context or explicitly included if needed.
+   */
+  rpc UpdateParkingMetadata(UpdateParkingMetadataRequest) returns (UpdateParkingMetadataResponse);
+
+  /**
+   * 3) UpdateBaseParkingBillingMethod
+   * Updates the default billing configurations for various vehicle types.
+   * Parking ID can be taken from context if your logic requires it.
+   */
+  rpc UpdateBaseParkingBillingMethod(UpdateBaseParkingBillingMethodRequest) returns (UpdateBaseParkingBillingMethodResponse);
+
+  /**
+   * 13) ListVehiclesInParking
+   * Retrieves a list of vehicles currently in the parking.
+   * Parking ID can be taken from context if required.
+   */
+  rpc ListVehiclesInParking(ListVehiclesInParkingRequest) returns (ListVehiclesInParkingResponse);
+
+  /**
+   * 14) ListReservationHistory
+   * Returns reservation history for this parking,
+   * optionally filtered by entry/exit time or plate.
+   */
+  rpc ListReservationHistory(ListReservationHistoryRequest) returns (ListReservationHistoryResponse);
+}
+
+/**
+ * SubscriptionService deals with creating, updating, and listing
+ * subscription plans and binding them to customers.
+ */
+service SubscriptionManagementService {
+  /**
+   * 4) AddSubscriptionParameters
+   * Creates a new subscription plan. Parking ID may come from context.
+   */
+  rpc AddSubscriptionParameters(AddSubscriptionParametersRequest) returns (AddSubscriptionParametersResponse);
+
+  /**
+   * 5) UpdateSubscriptionParameters
+   * Updates an existing subscription plan.
+   */
+  rpc UpdateSubscriptionParameters(UpdateSubscriptionParametersRequest) returns (UpdateSubscriptionParametersResponse);
+
+  /**
+   * 6) ListSubscriptionMetadata
+   * Lists subscription plans for a parking, paginated.
+   */
+  rpc ListSubscriptionMetadata(ListSubscriptionMetadataRequest) returns (ListSubscriptionMetadataResponse);
+
+  /**
+   * 7) CreateCustomerSubscription
+   * Binds a subscription to a customer (e.g., monthly pass).
+   */
+  rpc CreateCustomerSubscription(CreateCustomerSubscriptionRequest) returns (CreateCustomerSubscriptionResponse);
+
+  /**
+   * 8) GetCustomerSubscription
+   * Retrieves a single subscription for the specified customer identifier.
+   */
+  rpc GetCustomerSubscription(GetCustomerSubscriptionRequest) returns (GetCustomerSubscriptionResponse);
+
+  /**
+   * 9) ListCustomerSubscriptions
+   * Returns a paginated list of customer subscriptions with optional filters.
+   */
+  rpc ListCustomerSubscriptions(ListCustomerSubscriptionsRequest) returns (ListCustomerSubscriptionsResponse);
+
+  /**
+   * 10) CancelCustomerSubscription
+   * Cancels an active customer subscription.
+   */
+  rpc CancelCustomerSubscription(CancelCustomerSubscriptionRequest) returns (CancelCustomerSubscriptionResponse);
+
+  /**
+   * 11) RenewCustomerSubscription
+   * Extends the subscription’s validity by the specified number of days.
+   */
+  rpc RenewCustomerSubscription(RenewCustomerSubscriptionRequest) returns (RenewCustomerSubscriptionResponse);
+
+  /**
+   * 12) UpdateCustomerSubscription
+   * Updates the customer subscription details without changing status.
+   */
+  rpc UpdateCustomerSubscription(UpdateCustomerSubscriptionRequest) returns (UpdateCustomerSubscriptionResponse);
+}

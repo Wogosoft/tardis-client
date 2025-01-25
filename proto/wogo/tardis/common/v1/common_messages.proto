@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package wogo.tardis.common.v1;
+
+// -----------------------------------
+// Enumerations
+// -----------------------------------
+
+enum Currency {
+  CURRENCY_UNSPECIFIED = 0;
+  CURRENCY_COP = 1;
+}
+
+enum VehicleType {
+  VEHICLE_TYPE_UNSPECIFIED = 0;
+  VEHICLE_TYPE_MOTORCYCLE = 1;
+  VEHICLE_TYPE_CAR = 2;
+  VEHICLE_TYPE_BICYCLE = 3;
+}
+
+enum Timezone {
+  TIMEZONE_UNSPECIFIED = 0;
+  TIMEZONE_AMERICA_BOGOTA = 1;
+}
+
+enum PaymentType {
+  PAYMENT_TYPE_UNSPECIFIED = 0;
+  PAYMENT_TYPE_CASH = 1;
+  PAYMENT_TYPE_CARD = 2;
+  PAYMENT_TYPE_VIRTUAL_WALLET = 3; // e.g., Nequi, Daviplata, etc.
+  PAYMENT_TYPE_DIRECT_TRANSFER = 4; // Direct bank transfer
+  PAYMENT_TYPE_PREPAID = 5; // Only valid if there's an active subscription
+  PAYMENT_TYPE_OVERWRITE = 6; // Admin-only: free or special override
+}
+
+enum DaysOfWeek {
+  DAYS_OF_WEEK_UNSPECIFIED = 0;
+  DAYS_OF_WEEK_MONDAY = 1;
+  DAYS_OF_WEEK_TUESDAY = 2;
+  DAYS_OF_WEEK_WEDNESDAY = 3;
+  DAYS_OF_WEEK_THURSDAY = 4;
+  DAYS_OF_WEEK_FRIDAY = 5;
+  DAYS_OF_WEEK_SATURDAY = 6;
+  DAYS_OF_WEEK_SUNDAY = 7;
+}
+
+// -----------------------------------
+// Pagination
+// -----------------------------------
+
+/**
+ * Used in client requests to control pagination.
+ */
+message PaginationRequest {
+  int32 page_number = 1;
+  int32 page_size = 2;
+}
+
+/**
+ * Returned by the server with paginated lists.
+ */
+message PaginationResponse {
+  int64 total_items = 1;
+}

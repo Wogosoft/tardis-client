@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "name": "@wogo/tardis-client",
+  "exports": "./gen",
+  "tasks": {
+    "build": "npx @bufbuild/buf generate"
+  },
+  "imports": {
+    "@bufbuild/protobuf": "npm:@bufbuild/protobuf@^2.2.3",
+    "@connectrpc/connect-query": "npm:@connectrpc/connect-query@^2.0.1"
+  }
+}

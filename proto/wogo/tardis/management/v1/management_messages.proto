@@ -1,0 +1,413 @@
+syntax = "proto3";
+
+package wogo.tardis.management.v1;
+
+import "google/protobuf/timestamp.proto";
+import "wogo/tardis/common/v1/common_messages.proto";
+
+/**
+ * Updated payment type enumeration.
+ */
+
+enum SubscriptionType {
+  SUBSCRIPTION_TYPE_UNSPECIFIED = 0;
+  SUBSCRIPTION_TYPE_PERPETUAL = 1;
+  SUBSCRIPTION_TYPE_REGULAR = 2;
+}
+
+enum SubscriptionStatus {
+  SUBSCRIPTION_STATUS_UNSPECIFIED = 0;
+  SUBSCRIPTION_STATUS_ACTIVE = 1;
+  SUBSCRIPTION_STATUS_EXPIRED = 2;
+  SUBSCRIPTION_STATUS_CANCELLED = 3;
+}
+
+// -----------------------------------
+// Parking Domain Messages
+// -----------------------------------
+
+message AddNewParkingRequest {
+  // Parking creation data (ParkingId is generated, not provided).
+  string parking_name = 1;
+  string parking_city = 2;
+  string parking_address = 3;
+  string parking_zip_code = 4;
+  string parking_logo_url = 5;
+
+  wogo.tardis.common.v1.Currency currency = 6;
+  wogo.tardis.common.v1.Timezone timezone = 7;
+
+  int64 business_hours_start = 8;
+  int64 business_hours_end = 9;
+  int64 end_of_day_parameter = 10;
+
+  repeated wogo.tardis.common.v1.VehicleType allowed_vehicle_types = 11;
+  repeated wogo.tardis.common.v1.PaymentType available_payment_types = 12;
+}
+
+message AddNewParkingResponse {
+  // ID assigned by the system upon creation.
+  string parking_id = 1;
+
+  string parking_name = 2;
+  string parking_city = 3;
+  string parking_address = 4;
+  string parking_zip_code = 5;
+  string parking_logo_url = 6;
+  wogo.tardis.common.v1.Currency currency = 7;
+  wogo.tardis.common.v1.Timezone timezone = 8;
+  int64 business_hours_start = 9;
+  int64 business_hours_end = 10;
+  int64 end_of_day_parameter = 11;
+
+  repeated wogo.tardis.common.v1.VehicleType allowed_vehicle_types = 12;
+  repeated wogo.tardis.common.v1.PaymentType available_payment_types = 13;
+
+  string owner_id = 14;
+}
+
+message UpdateParkingMetadataRequest {
+  string parking_name = 1;
+  string parking_city = 2;
+  string parking_address = 3;
+  string parking_zip_code = 4;
+  string parking_logo_url = 5;
+  wogo.tardis.common.v1.Currency currency = 6;
+  wogo.tardis.common.v1.Timezone timezone = 7;
+
+  int64 business_hours_start = 8;
+  int64 business_hours_end = 9;
+  int64 end_of_day_parameter = 10;
+
+  repeated wogo.tardis.common.v1.VehicleType allowed_vehicle_types = 11;
+  repeated wogo.tardis.common.v1.PaymentType available_payment_types = 12;
+}
+
+message UpdateParkingMetadataResponse {
+  string parking_id = 1;
+  string parking_name = 2;
+  string parking_city = 3;
+  string parking_address = 4;
+  string parking_zip_code = 5;
+  string parking_logo_url = 6;
+  wogo.tardis.common.v1.Currency currency = 7;
+  wogo.tardis.common.v1.Timezone timezone = 8;
+  int64 business_hours_start = 9;
+  int64 business_hours_end = 10;
+  int64 end_of_day_parameter = 11;
+  repeated wogo.tardis.common.v1.VehicleType allowed_vehicle_types = 12;
+  repeated wogo.tardis.common.v1.PaymentType available_payment_types = 13;
+  string owner_id = 14; // if needed
+}
+
+// ---------------------------
+// Billing Configuration
+// ---------------------------
+
+message BillingParameters {
+  int32 billing_time_unit_seconds = 1;
+  int64 amount_per_time_unit = 2;
+  int32 minimum_billing_time_seconds = 3;
+  int32 maximum_billing_time_seconds = 4;
+  int64 cost_of_day = 5;
+}
+
+enum ExclusionType {
+  EXCLUSION_TYPE_UNSPECIFIED = 0;
+  EXCLUSION_TYPE_DAYS_EXCLUSION = 1;
+  EXCLUSION_TYPE_HOLIDAYS_EXCLUSION = 2;
+  EXCLUSION_TYPE_DATE_TIME_EXCLUSION = 3;
+}
+
+message BillingExclusion {
+  ExclusionType exclusion_type = 1;
+  BillingParameters override_billing_params = 2;
+
+  // For DAYS_EXCLUSION
+  repeated wogo.tardis.common.v1.DaysOfWeek days_of_week = 3;
+
+  // For HOLIDAYS_EXCLUSION
+  repeated string holiday_country_codes = 4;
+
+  // For DATE_TIME_EXCLUSION
+  google.protobuf.Timestamp start_time = 5;
+  google.protobuf.Timestamp end_time = 6;
+}
+
+message VehicleBillingConfig {
+  wogo.tardis.common.v1.VehicleType vehicle_type = 1;
+  BillingParameters base_billing_params = 2;
+  repeated BillingExclusion exclusions = 3;
+}
+
+message UpdateBaseParkingBillingMethodRequest {
+  repeated VehicleBillingConfig vehicle_billing_config = 1;
+}
+
+message UpdateBaseParkingBillingMethodResponse {
+  string parking_id = 1; // if relevant for clarity
+  repeated VehicleBillingConfig vehicle_billing_config = 2;
+}
+
+// -----------------------------------
+// Subscription Domain Messages
+// -----------------------------------
+
+message VehicleSubscriptionConfig {
+  int32 max_time_covered_seconds = 1;
+  int32 max_seconds_included = 2;
+}
+
+message AddSubscriptionParametersRequest {
+  // If ParkingId is gleaned from metadata, omit it.
+  string subscription_name = 1;
+  SubscriptionType subscription_type = 2;
+
+  repeated wogo.tardis.common.v1.VehicleType allowed_vehicle_types = 3;
+  repeated VehicleSubscriptionConfig vehicle_subscription_config = 4;
+}
+
+message AddSubscriptionParametersResponse {
+  string subscription_id = 1;
+  string subscription_name = 2;
+  SubscriptionType subscription_type = 3;
+
+  repeated wogo.tardis.common.v1.VehicleType allowed_vehicle_types = 4;
+  repeated VehicleSubscriptionConfig vehicle_subscription_config = 5;
+}
+
+message UpdateSubscriptionParametersRequest {
+  string subscription_id = 1; // must be known
+  string subscription_name = 2;
+  SubscriptionType subscription_type = 3;
+  repeated wogo.tardis.common.v1.VehicleType allowed_vehicle_types = 4;
+  repeated VehicleSubscriptionConfig vehicle_subscription_config = 5;
+}
+
+message UpdateSubscriptionParametersResponse {
+  string subscription_id = 1;
+  string subscription_name = 2;
+  SubscriptionType subscription_type = 3;
+  repeated wogo.tardis.common.v1.VehicleType allowed_vehicle_types = 4;
+  repeated VehicleSubscriptionConfig vehicle_subscription_config = 5;
+}
+
+message ListSubscriptionMetadataRequest {
+  wogo.tardis.common.v1.PaginationRequest pagination = 1;
+}
+
+message SubscriptionMetadata {
+  string subscription_id = 1;
+  string subscription_name = 2;
+  SubscriptionType subscription_type = 3;
+}
+
+message ListSubscriptionMetadataResponse {
+  repeated SubscriptionMetadata subscriptions = 1;
+  wogo.tardis.common.v1.PaginationResponse pagination = 2;
+}
+
+// -----------------------------------
+// Customer Subscription
+// -----------------------------------
+
+message CustomerVehicleInfo {
+  wogo.tardis.common.v1.VehicleType vehicle_type = 1;
+  string vehicle_plate = 2;
+}
+
+message CreateCustomerSubscriptionRequest {
+  string customer_identifier = 1;
+  string customer_name = 2;
+  string customer_last_name = 3;
+  string customer_email = 4;
+  string customer_phone_number = 5;
+  string subscription_id = 6;
+  repeated CustomerVehicleInfo added_vehicles = 7;
+
+  google.protobuf.Timestamp subscription_created_time = 8;
+  google.protobuf.Timestamp subscription_updated_time = 9;
+  google.protobuf.Timestamp subscription_expiration_time = 10;
+
+  int64 subscription_value = 11;
+  bool automatic_renewal = 12;
+  int32 subscription_duration_days = 13;
+}
+
+message CreateCustomerSubscriptionResponse {
+  string customer_subscription_id = 1;
+  SubscriptionStatus subscription_status = 2;
+
+  // Echo of provided fields
+  string customer_identifier = 3;
+  string subscription_id = 4;
+  repeated CustomerVehicleInfo added_vehicles = 5;
+
+  google.protobuf.Timestamp subscription_created_time = 6;
+  google.protobuf.Timestamp subscription_updated_time = 7;
+  google.protobuf.Timestamp subscription_expiration_time = 8;
+
+  int64 subscription_value = 9;
+  bool automatic_renewal = 10;
+  int32 subscription_duration_days = 11;
+}
+
+message GetCustomerSubscriptionRequest {
+  string customer_identifier = 1;
+}
+
+message GetCustomerSubscriptionResponse {
+  string customer_subscription_id = 1;
+  SubscriptionStatus subscription_status = 2;
+
+  string customer_identifier = 3;
+  string customer_name = 4;
+  string customer_last_name = 5;
+  string customer_email = 6;
+  string customer_phone_number = 7;
+
+  string subscription_id = 8;
+  repeated CustomerVehicleInfo added_vehicles = 9;
+
+  google.protobuf.Timestamp subscription_created_time = 10;
+  google.protobuf.Timestamp subscription_updated_time = 11;
+  google.protobuf.Timestamp subscription_expiration_time = 12;
+
+  int64 subscription_value = 13;
+  bool automatic_renewal = 14;
+  int32 subscription_duration_days = 15;
+}
+
+message ListCustomerSubscriptionsRequest {
+  wogo.tardis.common.v1.PaginationRequest pagination = 1;
+
+  // Optional filters:
+  string plate_number = 2;
+  google.protobuf.Timestamp expiration_start = 3;
+  google.protobuf.Timestamp expiration_end = 4;
+  string subscription_id = 5;
+}
+
+message CustomerSubscription {
+  string customer_subscription_id = 1;
+  SubscriptionStatus subscription_status = 2;
+  string customer_identifier = 3;
+  string subscription_id = 4;
+  repeated CustomerVehicleInfo added_vehicles = 5;
+  google.protobuf.Timestamp subscription_expiration_time = 6;
+  // Additional fields as needed
+}
+
+message ListCustomerSubscriptionsResponse {
+  repeated CustomerSubscription subscriptions = 1;
+  wogo.tardis.common.v1.PaginationResponse pagination = 2;
+}
+
+message CancelCustomerSubscriptionRequest {
+  string customer_subscription_id = 1;
+  string reason = 2;
+}
+
+message CancelCustomerSubscriptionResponse {
+  string customer_subscription_id = 1;
+  SubscriptionStatus subscription_status = 2;
+  string reason = 3;
+}
+
+message RenewCustomerSubscriptionRequest {
+  string customer_subscription_id = 1;
+  int32 additional_days = 2; // optional
+}
+
+message RenewCustomerSubscriptionResponse {
+  string customer_subscription_id = 1;
+  SubscriptionStatus subscription_status = 2;
+  google.protobuf.Timestamp subscription_expiration_time = 3;
+}
+
+message UpdateCustomerSubscriptionRequest {
+  string customer_subscription_id = 1;
+
+  string customer_identifier = 2;
+  string customer_name = 3;
+  string customer_last_name = 4;
+  string customer_email = 5;
+  string customer_phone_number = 6;
+
+  repeated CustomerVehicleInfo added_vehicles = 7;
+
+  google.protobuf.Timestamp subscription_created_time = 8;
+  google.protobuf.Timestamp subscription_updated_time = 9;
+  google.protobuf.Timestamp subscription_expiration_time = 10;
+
+  int64 subscription_value = 11;
+  bool automatic_renewal = 12;
+  int32 subscription_duration_days = 13;
+}
+
+message UpdateCustomerSubscriptionResponse {
+  string customer_subscription_id = 1;
+  SubscriptionStatus subscription_status = 2;
+
+  // Return the updated fields
+  string customer_identifier = 3;
+  string customer_name = 4;
+  string customer_last_name = 5;
+  string customer_email = 6;
+  string customer_phone_number = 7;
+
+  repeated CustomerVehicleInfo added_vehicles = 8;
+
+  google.protobuf.Timestamp subscription_created_time = 9;
+  google.protobuf.Timestamp subscription_updated_time = 10;
+  google.protobuf.Timestamp subscription_expiration_time = 11;
+
+  int64 subscription_value = 12;
+  bool automatic_renewal = 13;
+  int32 subscription_duration_days = 14;
+}
+
+// -----------------------------------
+// Reservation / Parking Lists
+// -----------------------------------
+
+message ListVehiclesInParkingRequest {
+  wogo.tardis.common.v1.PaginationRequest pagination = 1;
+}
+
+message ParkingVehicle {
+  string reservation_id = 1;
+  string plate_number = 2;
+  wogo.tardis.common.v1.VehicleType vehicle_type = 3;
+  google.protobuf.Timestamp entered_time = 4;
+}
+
+message ListVehiclesInParkingResponse {
+  repeated ParkingVehicle vehicles = 1;
+  wogo.tardis.common.v1.PaginationResponse pagination = 2;
+}
+
+message ListReservationHistoryRequest {
+  wogo.tardis.common.v1.PaginationRequest pagination = 1;
+
+  // Optional filters
+  google.protobuf.Timestamp entered_start = 2;
+  google.protobuf.Timestamp entered_end = 3;
+  google.protobuf.Timestamp exited_start = 4;
+  google.protobuf.Timestamp exited_end = 5;
+  string plate_number = 6;
+}
+
+message ReservationHistoryRecord {
+  string reservation_id = 1;
+  string billing_id = 2;
+  int64 billed_amount = 3;
+  string plate_number = 4;
+  google.protobuf.Timestamp entered_time = 5;
+  google.protobuf.Timestamp exited_time = 6;
+}
+
+message ListReservationHistoryResponse {
+  repeated ReservationHistoryRecord reservation_history = 1;
+  wogo.tardis.common.v1.PaginationResponse pagination = 2;
+}

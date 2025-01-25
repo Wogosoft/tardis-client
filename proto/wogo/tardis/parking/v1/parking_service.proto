@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package wogo.tardis.parking.v1;
+
+// Import the shared message definitions
+import "wogo/tardis/parking/v1/parking_messages.proto";
+
+/**
+ * ParkingService defines operations related to checking in/out,
+ * billing, and payment confirmations for a parking system.
+ */
+service ParkingService {
+  /**
+   * 1) CheckIn:
+   *    - Receives a plate number, vehicle type, and a server timestamp.
+   *    - Returns a reservation ID, server timestamp, parking ID,
+   *      subscription ID (if any), and the vehicle type.
+   */
+  rpc CheckIn(CheckInRequest) returns (CheckInResponse);
+
+  /**
+   * 2) Billing:
+   *    - Receives either plate_number OR reservation_id, a server timestamp,
+   *      a list of discount codes.
+   *    - Returns the currency, total amount, time parked, parking ID,
+   *      reservation ID, bill ID, and discount application results.
+   */
+  rpc Billing(BillingRequest) returns (BillingResponse);
+
+  /**
+   * 3) PaymentConfirmation:
+   *    - Receives a plate_number or reservation_id or billing_id (in that order of priority),
+   *      plus a payment method (CASH, CARD, WALLET, PREPAID, OVERWRITE).
+   *    - Returns the related parking_id, reservation_id, billing_id,
+   *      a server timestamp, and a payment_id.
+   */
+  rpc PaymentConfirmation(PaymentConfirmationRequest) returns (PaymentConfirmationResponse);
+
+  /**
+   * 4) Checkout:
+   *    - Receives either plate_number or reservation_id, a server timestamp,
+   *      and optionally a force_checkout (admin-only).
+   *    - Returns a status (SUCCESS, NOT_PAYED, NOT_CHECK_IN_REGISTERED),
+   *      the parking ID, final checkout timestamp, and reservation ID.
+   */
+  rpc Checkout(CheckoutRequest) returns (CheckoutResponse);
+}

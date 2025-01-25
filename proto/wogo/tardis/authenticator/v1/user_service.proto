@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package wogo.tardis.authenticator.v1;
+
+// Import the messages definitions
+import "wogo/tardis/authenticator/v1/user_messages.proto";
+
+// Define the gRPC service with the three required methods
+service UserAuthenticatorService {
+  // 1) Login:
+  //    - Receives a username/password
+  //    - Returns an auth token
+  rpc Login(LoginRequest) returns (LoginResponse);
+
+  // 2) Logout:
+  //    - Receives an auth token
+  //    - Returns an empty response
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+
+  // 3) ValidateAuth:Ï
+  //    - Receives an auth token
+  //    - Returns status (active/inactive/expired/etc.)
+  //      and user details if active
+  rpc ValidateAuth(ValidateAuthRequest) returns (ValidateAuthResponse);
+}
+
+// UserManagement service definition.
+service UserManagementService {
+  // 1) CreateNewUser:
+  //    - Receives the name, email, username, permissions, and role of the new user.
+  //    - Returns the newly created user information.
+  rpc CreateNewUser(CreateNewUserRequest) returns (CreateNewUserResponse);
+
+  // 2) UpdateUser:
+  //    - Receives the user ID of the user being updated.
+  //    - Allows updating name, email, username, permissions, and role.
+  //    - Returns the updated user information.
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+
+  // 3) InactiveUser:
+  //    - Receives the user ID of the user to deactivate.
+  //    - Returns the updated user information with the new status.
+  rpc InactivateUser(InactivateUserRequest) returns (InactivateUserResponse);
+
+  // 4) ReactivateUser:
+  //    - Receives the user ID of the user to reactivate.
+  //    - Returns the updated user information with the new status.
+  rpc ReactivateUser(ReactivateUserRequest) returns (ReactivateUserResponse);
+
+  // 5) ListAssociatedUsers:
+  //    - Infers the parking ID from metadata.
+  //    - Returns a list of all users associated with the parking ID.
+  rpc ListAssociatedUsers(ListAssociatedUsersRequest) returns (ListAssociatedUsersResponse);
+
+  // 6) ChangePassword:
+  //    - Receives the user ID and new password.
+  //    - Returns a success message.
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
+}

@@ -1,0 +1,146 @@
+{
+  "version": "4",
+  "specifiers": {
+    "npm:@bufbuild/buf@1.50.0": "1.50.0",
+    "npm:@bufbuild/protobuf@^2.2.3": "2.2.3",
+    "npm:@bufbuild/protoc-gen-es@^2.2.3": "2.2.3_@bufbuild+protobuf@2.2.3",
+    "npm:@connectrpc/connect-query@^2.0.1": "2.0.1_@bufbuild+protobuf@2.2.3_@connectrpc+connect@2.0.1__@bufbuild+protobuf@2.2.3_@tanstack+react-query@5.64.2__react@19.0.0_react@19.0.0_react-dom@19.0.0__react@19.0.0",
+    "npm:@connectrpc/protoc-gen-connect-query@^2.0.1": "2.0.1_@bufbuild+protoc-gen-es@2.2.3__@bufbuild+protobuf@2.2.3_@bufbuild+protobuf@2.2.3"
+  },
+  "npm": {
+    "@bufbuild/buf-darwin-arm64@1.50.0": {
+      "integrity": "sha512-ldj1s0hMhZlz0N4+fqs9jGqC7jKAcsfLNp8kM+G+6XTPh8GWA/U1sYRdHhAlv1+3STfWhGxAhrNGRRVvvimALQ=="
+    },
+    "@bufbuild/buf-darwin-x64@1.50.0": {
+      "integrity": "sha512-0ODFAnDVr0UOIUHGrI3vA3Cycec186BP5PFOuW6bALxBVN52Lqjjj+/+bVhvbBQlYo3rkxOtxEdoWGHZJrHhHA=="
+    },
+    "@bufbuild/buf-linux-aarch64@1.50.0": {
+      "integrity": "sha512-Dp0YzLOW7O+C8bAm6/Q2HSrTYpDs2SxQXx+dBNxUotMpzx+uaUvqXb3EGr7s07ro+FsT0sFjzKTBcuCwkj+guQ=="
+    },
+    "@bufbuild/buf-linux-armv7@1.50.0": {
+      "integrity": "sha512-EMYRKSJ4kZo+OiHvMTYM+O27lf/okaf+bk1agRUTmBccp+qoGEC0R3DB/powFf/FURkUF7vKUS4T0GC/4n8OVA=="
+    },
+    "@bufbuild/buf-linux-x64@1.50.0": {
+      "integrity": "sha512-1G6ZQLXYoCXl8ZmCivUuknc6BiMz2bMtfpzYurFhj9wCIQTZsgepTBoiXHTcEdu2fjYAFxRGo4o+ZALU1umY0g=="
+    },
+    "@bufbuild/buf-win32-arm64@1.50.0": {
+      "integrity": "sha512-KpbI+f0TnGaa4KlPQXCLx8ZWKfO2pMD1kvVjAaktmm9OUoP9HrvZJ11tDEiFEFbrKbapCIhCCC3XWaldEDJWcA=="
+    },
+    "@bufbuild/buf-win32-x64@1.50.0": {
+      "integrity": "sha512-gA9aVuZYfh3pmWNYxmnK6thlcqyu2ht8haFhdB0w14Rtj200FAsMmzF7CPWvXQrV5g0pqXPwoMjZigT4OJHOXg=="
+    },
+    "@bufbuild/buf@1.50.0": {
+      "integrity": "sha512-XcdB5/Ls8k1eVcgNwUsRZEhCqiHgsnN+uEk/aDh0urGeiWc/dN6c89ZnAnI9/v0AZWzp6/rowoZhThlTl+D0bw==",
+      "dependencies": [
+        "@bufbuild/buf-darwin-arm64",
+        "@bufbuild/buf-darwin-x64",
+        "@bufbuild/buf-linux-aarch64",
+        "@bufbuild/buf-linux-armv7",
+        "@bufbuild/buf-linux-x64",
+        "@bufbuild/buf-win32-arm64",
+        "@bufbuild/buf-win32-x64"
+      ]
+    },
+    "@bufbuild/protobuf@2.2.3": {
+      "integrity": "sha512-tFQoXHJdkEOSwj5tRIZSPNUuXK3RaR7T1nUrPgbYX1pUbvqqaaZAsfo+NXBPsz5rZMSKVFrgK1WL8Q/MSLvprg=="
+    },
+    "@bufbuild/protoc-gen-es@2.2.3_@bufbuild+protobuf@2.2.3": {
+      "integrity": "sha512-hdhIV9NmwXXy24DcbnArauv6L5Dv2PjkO9gz2DUhiZ9HPRpP+rmpT8zo5LohjJiuA7YIQGGKKWSKpRg+xcdLSQ==",
+      "dependencies": [
+        "@bufbuild/protobuf",
+        "@bufbuild/protoplugin"
+      ]
+    },
+    "@bufbuild/protoplugin@2.2.3_typescript@5.4.5": {
+      "integrity": "sha512-UsV7mj6NJTZrqIYJK+jNFnnj5tOS7wgNXKyMjebFEpf+OX6pfXE+nx+QPjumOfu4GxdVPfEDnKuwISgqlXSQqw==",
+      "dependencies": [
+        "@bufbuild/protobuf",
+        "@typescript/vfs",
+        "typescript"
+      ]
+    },
+    "@connectrpc/connect-query-core@2.0.1_@bufbuild+protobuf@2.2.3_@connectrpc+connect@2.0.1__@bufbuild+protobuf@2.2.3_@tanstack+query-core@5.64.2": {
+      "integrity": "sha512-jCub8nPBGhZK+RumQ8vcH4q6xqQ8O52+G75DAmhhESK2FsJgwerJjcw6XrqFpeJFz5O4cy0uuJm+ZK3TsrbxTw==",
+      "dependencies": [
+        "@bufbuild/protobuf",
+        "@connectrpc/connect",
+        "@tanstack/query-core"
+      ]
+    },
+    "@connectrpc/connect-query@2.0.1_@bufbuild+protobuf@2.2.3_@connectrpc+connect@2.0.1__@bufbuild+protobuf@2.2.3_@tanstack+react-query@5.64.2__react@19.0.0_react@19.0.0_react-dom@19.0.0__react@19.0.0": {
+      "integrity": "sha512-yVGRI17c96G0xb3ST9xGJ8k6KwKHp2qHRZo/JxLvh4+5lcJHsEa5xzf7sHm0363blTWhEa06b+gcQMckpiUdGw==",
+      "dependencies": [
+        "@bufbuild/protobuf",
+        "@connectrpc/connect",
+        "@connectrpc/connect-query-core",
+        "@tanstack/react-query",
+        "react",
+        "react-dom"
+      ]
+    },
+    "@connectrpc/connect@2.0.1_@bufbuild+protobuf@2.2.3": {
+      "integrity": "sha512-o+MauvcOnfN4vjpS8ngoX+ubhcCDvnexlLwtk/VnkCLjoRMUz2PKqi87Si58ViWq0vzmGYPRf2LNwhJk5kcCXA==",
+      "dependencies": [
+        "@bufbuild/protobuf"
+      ]
+    },
+    "@connectrpc/protoc-gen-connect-query@2.0.1_@bufbuild+protoc-gen-es@2.2.3__@bufbuild+protobuf@2.2.3_@bufbuild+protobuf@2.2.3": {
+      "integrity": "sha512-vbqr11Vg4gV5W5WUoC1/ZGIPU+iMWj8sR/WO6cBFV1bKLluWv4s7UWmbpEYDSUap3RVklRMcr+HZSDqbPgV0Hg==",
+      "dependencies": [
+        "@bufbuild/protobuf",
+        "@bufbuild/protoc-gen-es",
+        "@bufbuild/protoplugin"
+      ]
+    },
+    "@tanstack/query-core@5.64.2": {
+      "integrity": "sha512-hdO8SZpWXoADNTWXV9We8CwTkXU88OVWRBcsiFrk7xJQnhm6WRlweDzMD+uH+GnuieTBVSML6xFa17C2cNV8+g=="
+    },
+    "@tanstack/react-query@5.64.2_react@19.0.0": {
+      "integrity": "sha512-3pakNscZNm8KJkxmovvtZ4RaXLyiYYobwleTMvpIGUoKRa8j8VlrQKNl5W8VUEfVfZKkikvXVddLuWMbcSCA1Q==",
+      "dependencies": [
+        "@tanstack/query-core",
+        "react"
+      ]
+    },
+    "@typescript/vfs@1.6.0_typescript@5.4.5": {
+      "integrity": "sha512-hvJUjNVeBMp77qPINuUvYXj4FyWeeMMKZkxEATEU3hqBAQ7qdTBCUFT7Sp0Zu0faeEtFf+ldXxMEDr/bk73ISg==",
+      "dependencies": [
+        "debug",
+        "typescript"
+      ]
+    },
+    "debug@4.4.0": {
+      "integrity": "sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==",
+      "dependencies": [
+        "ms"
+      ]
+    },
+    "ms@2.1.3": {
+      "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="
+    },
+    "react-dom@19.0.0_react@19.0.0": {
+      "integrity": "sha512-4GV5sHFG0e/0AD4X+ySy6UJd3jVl1iNsNHdpad0qhABJ11twS3TTBnseqsKurKcsNqCEFeGL3uLpVChpIO3QfQ==",
+      "dependencies": [
+        "react",
+        "scheduler"
+      ]
+    },
+    "react@19.0.0": {
+      "integrity": "sha512-V8AVnmPIICiWpGfm6GLzCR/W5FXLchHop40W4nXBmdlEceh16rCN8O8LNWm5bh5XUX91fh7KpA+W0TgMKmgTpQ=="
+    },
+    "scheduler@0.25.0": {
+      "integrity": "sha512-xFVuu11jh+xcO7JOAGJNOXld8/TcEHK/4CituBUeUb5hqxJLj9YuemAEuvm9gQ/+pgXYfbQuqAkiYu+u7YEsNA=="
+    },
+    "typescript@5.4.5": {
+      "integrity": "sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:@bufbuild/protobuf@^2.2.3",
+      "npm:@bufbuild/protoc-gen-es@^2.2.3",
+      "npm:@connectrpc/connect-query@^2.0.1",
+      "npm:@connectrpc/protoc-gen-connect-query@^2.0.1"
+    ]
+  }
+}
