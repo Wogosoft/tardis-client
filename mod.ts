@@ -26,11 +26,11 @@ extends Effect.Tag("TransportLayer")<
     }
 }
 
-const makeClient = <T extends DescService>(service: T): Effect.Effect<
-    Client<T>,
-    never,
-    TransportLayer
-> => {
+type ClientEffect<T extends DescService, R = TransportLayer> = Effect.Effect<
+    Client<T>, never, R
+>
+
+const makeClient = <T extends DescService>(service: T): ClientEffect<T> => {
     return Effect.gen(function*(){
         const tx = yield* TransportLayer.tx;
         return createClient(service, tx) 
@@ -63,12 +63,16 @@ export const wrapClient = <T extends DescService>(client: Client<T>): ClientProx
     }) as unknown as ClientProxy<T>;
 }
 
+type ProxyEffect<T extends DescService, R = TransportLayer> = Effect.Effect<ClientProxy<T>, never, R>;
+
 const makeProxy = <
     R,
     const T extends DescService,
->(service: Effect.Effect<Client<T>, never, R>) => {
+>(service: Effect.Effect<Client<T>, never, R>): ProxyEffect<T, R> => {
     return service.pipe(Effect.map(wrapClient))
 }
+
+type ProxyLayer<T, R = TransportLayer> = Layer.Layer<T, never, R>;
 
 export declare namespace UserAuthenticator.Messages {
     type LoginRequest = UserMessages.LoginRequest;
@@ -84,8 +88,10 @@ extends Effect.Tag("@clients/UserAuthenticator")<
     UserAuthenticator,
     ClientProxy<typeof UserAuthenticatorService>
 >(){
-    static Effect = makeClient(UserAuthenticatorService);
-    static Layer = Layer.effect(this, makeProxy(this.Effect));
+    static Effect: ClientEffect<typeof UserAuthenticatorService> = 
+        makeClient(UserAuthenticatorService);
+    static Layer: ProxyLayer<UserAuthenticator> = 
+        Layer.effect(this, makeProxy(this.Effect));
 }
 
 export declare namespace UserManagement.Messages {
@@ -100,8 +106,10 @@ extends Effect.Tag("@clients/UserManagement")<
     UserManagement,
     ClientProxy<typeof UserManagementService>
 >(){
-    static Effect = makeClient(UserManagementService);
-    static Layer = Layer.effect(this, makeProxy(this.Effect));
+    static Effect: ClientEffect<typeof UserManagementService> = 
+        makeClient(UserManagementService);
+    static Layer: ProxyLayer<UserManagement> = 
+        Layer.effect(this, makeProxy(this.Effect));
 }
 
 export declare namespace ParkingManagement.Messages {
@@ -122,8 +130,10 @@ extends Effect.Tag("@clients/ParkingManagement")<
     ParkingManagement,
     ClientProxy<typeof ParkingManagementService>
 >(){
-    static Effect = makeClient(ParkingManagementService);
-    static Layer = Layer.effect(this, makeProxy(this.Effect));
+    static Effect: ClientEffect<typeof ParkingManagementService> = 
+        makeClient(ParkingManagementService);
+    static Layer: ProxyLayer<ParkingManagement> = 
+        Layer.effect(this, makeProxy(this.Effect));
 }
 
 export declare namespace SubscriptionManagement.Messages {
@@ -152,8 +162,10 @@ extends Context.Tag("@clients/SubscriptionManagement")<
     SubscriptionManagement,
     ClientProxy<typeof SubscriptionManagementService>
 >(){
-    static Effect = makeClient(SubscriptionManagementService);
-    static Layer = Layer.effect(this, makeProxy(this.Effect));
+    static Effect: ClientEffect<typeof SubscriptionManagementService> = 
+        makeClient(SubscriptionManagementService);
+    static Layer: ProxyLayer<SubscriptionManagement> = 
+        Layer.effect(this, makeProxy(this.Effect));
 }
 
 export declare namespace Parking.Messages {
@@ -172,6 +184,8 @@ extends Context.Tag("@clients/Parking")<
     Parking,
     ClientProxy<typeof ParkingService>
 >(){
-    static Effect = makeClient(ParkingService);
-    static Layer = Layer.effect(this, makeProxy(this.Effect));
+    static Effect: ClientEffect<typeof ParkingService> = 
+        makeClient(ParkingService);
+    static Layer: ProxyLayer<Parking> = 
+        Layer.effect(this, makeProxy(this.Effect));
 }
