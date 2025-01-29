@@ -1,4 +1,4 @@
-import { Context, Effect, Layer } from "@effect";
+import { type Cause, type Context, Effect, Layer } from "@effect";
 import type { DescService, DescMethodUnary, MessageInitShape, MessageShape } from "@bufbuild/protobuf"
 import { createClient, type Transport, type Client, type CallOptions } from "@connectrpc/connect";
 import { createConnectTransport, type ConnectTransportOptions } from "@connectrpc/connect-node";
@@ -14,11 +14,26 @@ export declare namespace TransportLayer {
         tx: Transport
     }
 }
-export class TransportLayer
-extends Effect.Tag("TransportLayer")<
+
+type EffectTagType<Self, Id, Type> = Context.TagClass<
+    Self, 
+    Id, 
+    Type
+> & Effect.Tag.Proxy<Self, Type> & {
+use: <X>(body: (_: Type) => X) => 
+    [X] extends [Effect.Effect<infer A, infer E, infer R>] ? Effect.Effect<A, E, R | Self> : 
+    [X] extends [PromiseLike<infer A>] ? Effect.Effect<A, Cause.UnknownException, Self> : 
+    Effect.Effect<X, never, Self>;
+} 
+
+const TransportLayerSuper: EffectTagType<
+    TransportLayer, "TransportLayer", TransportLayer.Shape
+> = Effect.Tag("TransportLayer")<
     TransportLayer,
     TransportLayer.Shape
->(){
+>();
+
+export class TransportLayer extends TransportLayerSuper {
     static makeConnectTransport = (options: ConnectTransportOptions): Layer.Layer<TransportLayer> => {
         return Layer.effect(TransportLayer, Effect.sync(() => {
             return { tx: createConnectTransport(options) }
@@ -83,11 +98,17 @@ export declare namespace UserAuthenticator.Messages {
     type ValidateAuthResponse = UserMessages.ValidateAuthResponse;
 }
 
-export class UserAuthenticator
-extends Effect.Tag("@clients/UserAuthenticator")<
+
+const UserAuthenticatorSuper : EffectTagType<
+    UserAuthenticator,
+    "@clients/UserAuthenticator",
+    ClientProxy<typeof UserAuthenticatorService>
+> = Effect.Tag("@clients/UserAuthenticator")<
     UserAuthenticator,
     ClientProxy<typeof UserAuthenticatorService>
->(){
+>()
+
+export class UserAuthenticator extends UserAuthenticatorSuper {
     static Effect: ClientEffect<typeof UserAuthenticatorService> = 
         makeClient(UserAuthenticatorService);
     static Layer: ProxyLayer<UserAuthenticator> = 
@@ -101,11 +122,16 @@ export declare namespace UserManagement.Messages {
     type ChangePasswordResponse = UserMessages.ChangePasswordResponse;
 }
 
-export class UserManagement
-extends Effect.Tag("@clients/UserManagement")<
+const UserManagementSuper: EffectTagType<
+    UserManagement,
+    "@clients/UserManagement",
+    ClientProxy<typeof UserManagementService>
+> = Effect.Tag("@clients/UserManagement")<
     UserManagement,
     ClientProxy<typeof UserManagementService>
->(){
+>();
+
+export class UserManagement extends UserManagementSuper {
     static Effect: ClientEffect<typeof UserManagementService> = 
         makeClient(UserManagementService);
     static Layer: ProxyLayer<UserManagement> = 
@@ -125,11 +151,16 @@ export declare namespace ParkingManagement.Messages {
     type ListReservationHistoryResponse = ParkingManagementMessages.ListReservationHistoryResponse;
 }
 
-export class ParkingManagement
-extends Effect.Tag("@clients/ParkingManagement")<
+const ParkingManagementSuper : EffectTagType<
+    ParkingManagement,
+    "@clients/ParkingManagement",
+    ClientProxy<typeof ParkingManagementService>
+> = Effect.Tag("@clients/ParkingManagement")<
     ParkingManagement,
     ClientProxy<typeof ParkingManagementService>
->(){
+>();
+
+export class ParkingManagement extends ParkingManagementSuper{
     static Effect: ClientEffect<typeof ParkingManagementService> = 
         makeClient(ParkingManagementService);
     static Layer: ProxyLayer<ParkingManagement> = 
@@ -155,13 +186,18 @@ export declare namespace SubscriptionManagement.Messages {
     type RenewCustomerSubscriptionResponse = ParkingManagementMessages.RenewCustomerSubscriptionResponse;
     type UpdateCustomerSubscriptionRequest = ParkingManagementMessages.UpdateCustomerSubscriptionRequest;
     type UpdateCustomerSubscriptionResponse = ParkingManagementMessages.UpdateCustomerSubscriptionResponse;
-}
+};
 
-export class SubscriptionManagement
-extends Context.Tag("@clients/SubscriptionManagement")<
+const SubscriptionManagementSuper : EffectTagType<
+    SubscriptionManagement,
+    "@clients/SubscriptionManagement",
+    ClientProxy<typeof SubscriptionManagementService>
+> = Effect.Tag("@clients/SubscriptionManagement")<
     SubscriptionManagement,
     ClientProxy<typeof SubscriptionManagementService>
->(){
+>();
+
+export class SubscriptionManagement extends SubscriptionManagementSuper {
     static Effect: ClientEffect<typeof SubscriptionManagementService> = 
         makeClient(SubscriptionManagementService);
     static Layer: ProxyLayer<SubscriptionManagement> = 
@@ -179,11 +215,16 @@ export declare namespace Parking.Messages {
     type CheckoutResponse = ParkingMessages.CheckoutResponse;
 }
 
-export class Parking
-extends Context.Tag("@clients/Parking")<
+const ParkingSuper: EffectTagType<
+    Parking,
+    "@clients/Parking",
+    ClientProxy<typeof ParkingService>
+> = Effect.Tag("@clients/Parking")<
     Parking,
     ClientProxy<typeof ParkingService>
->(){
+>();
+
+export class Parking extends ParkingSuper {
     static Effect: ClientEffect<typeof ParkingService> = 
         makeClient(ParkingService);
     static Layer: ProxyLayer<Parking> = 
