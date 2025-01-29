@@ -55,7 +55,10 @@ const makeClient = <T extends DescService>(service: T): ClientEffect<T> => {
 type ClientProxy<Desc extends DescService> = {
     [P in keyof Desc["method"]]: 
         Desc["method"][P] extends DescMethodUnary<infer I, infer O> 
-        ? (request: MessageInitShape<I>, options?: CallOptions) => Effect.Effect<MessageShape<O>> 
+        ? (request: MessageInitShape<I>, options?: CallOptions) => Effect.Effect<
+            MessageShape<O>,
+            Cause.UnknownException
+        > 
         : never;
 };
 
@@ -66,7 +69,7 @@ export const wrapClient = <T extends DescService>(client: Client<T>): ClientProx
                 // deno-lint-ignore no-explicit-any
                 type UnaryFn = (request: MessageInitShape<any>, options?: CallOptions) => Promise<MessageShape<any>>
                 // deno-lint-ignore no-explicit-any
-                return (init: MessageInitShape<any>, opts: CallOptions = {}) => Effect.promise((signal) => {
+                return (init: MessageInitShape<any>, opts: CallOptions = {}) => Effect.tryPromise((signal) => {
                     return (target[p as keyof Client<T>] as UnaryFn)(init, { 
                         signal,
                         ...opts
