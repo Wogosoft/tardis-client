@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.1.0",
   "name": "@wogo/tardis-client",
   "license": "GPL-3.0-only",
   "exports": "./mod.ts",
@@ -7,7 +7,7 @@
     "test": "deno test mod.spec.ts"
   },
   "publish": {
-    "include": ["./gen/wogo/tardis", "./mod.ts"]
+    "include": ["./gen/wogo/tardis", "./gen/grpc/health", "./mod.ts"]
   },
   "lint": {
     "rules": {
@@ -20,6 +20,7 @@
     "@tardis/common/": "./gen/wogo/tardis/common/v1/",
     "@tardis/management/": "./gen/wogo/tardis/management/v1/",
     "@tardis/parking/": "./gen/wogo/tardis/parking/v1/",
+    "@tardis/health/": "./gen/grpc/health/v1/",
     "@bufbuild/protobuf": "npm:@bufbuild/protobuf@^2.2.3",
     "@connectrpc/connect" : "npm:@connectrpc/connect@2.0.1",
     "@connectrpc/connect-node": "npm:@connectrpc/connect-node@2.0.1"

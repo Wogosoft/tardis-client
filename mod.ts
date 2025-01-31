@@ -8,6 +8,7 @@ import { ParkingManagementService, SubscriptionManagementService } from "@tardis
 import type * as ParkingManagementMessages from "@tardis/management/management_messages_pb.ts";
 import { ParkingService } from "@tardis/parking/parking_service_pb.ts"
 import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
+import { Health, HealthCheckResponse_ServingStatus as HealthStatus } from "@tardis/health/healthcheck_pb.ts";
 
 export declare namespace TransportLayer {
     type Shape = {
@@ -116,6 +117,7 @@ export class UserAuthenticator extends UserAuthenticatorSuper {
         makeClient(UserAuthenticatorService);
     static Layer: ProxyLayer<UserAuthenticator> = 
         Layer.effect(this, makeProxy(this.Effect));
+    static Id = "wogo.tardis.authenticator.v1.UserAuthenticatorService" as const;
 }
 
 export declare namespace UserManagement.Messages {
@@ -139,6 +141,7 @@ export class UserManagement extends UserManagementSuper {
         makeClient(UserManagementService);
     static Layer: ProxyLayer<UserManagement> = 
         Layer.effect(this, makeProxy(this.Effect));
+    static Id = "wogo.tardis.authenticator.v1.UserManagementService" as const
 }
 
 export declare namespace ParkingManagement.Messages {
@@ -168,6 +171,7 @@ export class ParkingManagement extends ParkingManagementSuper{
         makeClient(ParkingManagementService);
     static Layer: ProxyLayer<ParkingManagement> = 
         Layer.effect(this, makeProxy(this.Effect));
+    static Id = "wogo.tardis.management.v1.ParkingManagementService" as const
 }
 
 export declare namespace SubscriptionManagement.Messages {
@@ -205,6 +209,7 @@ export class SubscriptionManagement extends SubscriptionManagementSuper {
         makeClient(SubscriptionManagementService);
     static Layer: ProxyLayer<SubscriptionManagement> = 
         Layer.effect(this, makeProxy(this.Effect));
+    static Id = "wogo.tardis.management.v1.SubscriptionManagementService" as const;
 }
 
 export declare namespace Parking.Messages {
@@ -232,4 +237,41 @@ export class Parking extends ParkingSuper {
         makeClient(ParkingService);
     static Layer: ProxyLayer<Parking> = 
         Layer.effect(this, makeProxy(this.Effect));
+    static Id = "wogo.tardis.parking.v1.ParkingService" as const;
+}
+
+export type ServiceId = 
+    | typeof Parking.Id
+    | typeof ParkingManagement.Id
+    | typeof SubscriptionManagement.Id
+    | typeof UserAuthenticator.Id
+    | typeof UserManagement.Id
+
+export declare namespace HealthCheck {
+    type Shape = {
+        check: (service: ServiceId) => Effect.Effect<{ serving: boolean }>;
+    }
+}
+
+const HealthSuper: EffectTagType<
+    HealthCheck,
+    "@clients/health",
+    HealthCheck.Shape
+> = Effect.Tag("@clients/health")<
+    HealthCheck,
+    HealthCheck.Shape
+>();
+
+export class HealthCheck extends HealthSuper {
+    static Effect: Effect.Effect<HealthCheck.Shape, never, TransportLayer> = 
+        Effect.gen(function*(){
+            const client = yield* makeClient(Health);
+            return HealthCheck.of({
+                check: (service) => Effect.tryPromise((signal) => client.check({ service }, { signal })).pipe(
+                    Effect.map(res => ({ serving: res.status === HealthStatus.SERVING })),
+                    Effect.catchAll(() => Effect.succeed({ serving: false }))
+                )
+            })
+        })
+    static Layer: Layer.Layer<HealthCheck, never, TransportLayer> = Layer.effect(this, this.Effect);
 }
