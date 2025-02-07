@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "name": "@wogo/tardis-client",
   "license": "GPL-3.0-only",
   "exports": "./mod.ts",
@@ -15,7 +15,7 @@
     }
   },
   "imports": {
-    "@effect": "npm:effect@3.10.16",
+    "@effect": "npm:effect@3.12.9",
     "@tardis/authenticator/": "./gen/wogo/tardis/authenticator/v1/",
     "@tardis/common/": "./gen/wogo/tardis/common/v1/",
     "@tardis/management/": "./gen/wogo/tardis/management/v1/",

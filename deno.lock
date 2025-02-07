@@ -15,7 +15,8 @@
     "npm:@connectrpc/connect@^2.0.1": "2.0.1_@bufbuild+protobuf@2.2.3",
     "npm:@connectrpc/protoc-gen-connect-es@^1.6.1": "1.6.1",
     "npm:@types/node@*": "22.5.4",
-    "npm:effect@3.10.16": "3.10.16"
+    "npm:effect@3.10.16": "3.10.16",
+    "npm:effect@3.12.9": "3.12.9"
   },
   "jsr": {
     "@std/assert@1.0.11": {
@@ -157,8 +158,14 @@
         "fast-check"
       ]
     },
-    "fast-check@3.23.1": {
-      "integrity": "sha512-u/MudsoQEgBUZgR5N1v87vEgybeVYus9VnDVaIkxkkGP2jt54naghQ3PCQHJiogS8U/GavZCUPFfx3Xkp+NaHw==",
+    "effect@3.12.9": {
+      "integrity": "sha512-u3PsO0KWtCTO56yGGYaa8RLOccE6Kbeb4UotS/ArAG/tqAyf0x3JF3WaaklhnxJtt67P6SktLmwRPT4hiuhKEA==",
+      "dependencies": [
+        "fast-check"
+      ]
+    },
+    "fast-check@3.23.2": {
+      "integrity": "sha512-h5+1OzzfCC3Ef7VbtKdcv7zsstUQwUDlYpUTvjeUsJAssPgLn7QzbboPtL5ro04Mq0rPOsMzl7q5hIbRs2wD1A==",
       "dependencies": [
         "pure-rand"
       ]
@@ -184,7 +191,7 @@
       "npm:@bufbuild/protobuf@^2.2.3",
       "npm:@connectrpc/connect-node@2.0.1",
       "npm:@connectrpc/connect@2.0.1",
-      "npm:effect@3.10.16"
+      "npm:effect@3.12.9"
     ],
     "packageJson": {
       "dependencies": [
