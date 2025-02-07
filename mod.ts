@@ -40,6 +40,13 @@ export class TransportLayer extends TransportLayerSuper {
             return { tx: createConnectTransport(options) }
         }))
     }
+
+    static makeTransport = (options: ConnectTransportOptions): Effect.Effect<Transport> => {
+        return Effect.suspend(() => {
+            return Effect
+                .succeed(createConnectTransport(options))
+        })
+    }
 }
 
 type ClientEffect<T extends DescService, R = TransportLayer> = Effect.Effect<
