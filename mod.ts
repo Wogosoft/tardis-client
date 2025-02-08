@@ -4,6 +4,7 @@ import { createClient, type Transport, type Client, type CallOptions } from "@co
 import { createConnectTransport, type ConnectTransportOptions } from "@connectrpc/connect-node";
 import { UserAuthenticatorService, UserManagementService } from "@tardis/authenticator/user_service_pb.ts";
 import type * as UserMessages from "@tardis/authenticator/user_messages_pb.ts"
+import { AuthStatus  } from "@tardis/authenticator/user_messages_pb.ts";
 import { ParkingManagementService, SubscriptionManagementService } from "@tardis/management/management_service_pb.ts";
 import type * as ParkingManagementMessages from "@tardis/management/management_messages_pb.ts";
 import { ParkingService } from "@tardis/parking/parking_service_pb.ts"
@@ -16,7 +17,7 @@ export declare namespace TransportLayer {
     }
 }
 
-type EffectTagType<Self, Id, Type> = Context.TagClass<
+type EffectTagType<Self, Id extends string, Type> = Context.TagClass<
     Self, 
     Id, 
     Type
@@ -120,6 +121,7 @@ const UserAuthenticatorSuper : EffectTagType<
 >()
 
 export class UserAuthenticator extends UserAuthenticatorSuper {
+    static AuthStatus = AuthStatus;
     static Effect: ClientEffect<typeof UserAuthenticatorService> = 
         makeClient(UserAuthenticatorService);
     static Layer: ProxyLayer<UserAuthenticator> = 
