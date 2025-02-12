@@ -249,12 +249,15 @@ export class Parking extends ParkingSuper {
     static Id = "wogo.tardis.parking.v1.ParkingService" as const;
 }
 
-export type ServiceId = 
-    | typeof Parking.Id
-    | typeof ParkingManagement.Id
-    | typeof SubscriptionManagement.Id
-    | typeof UserAuthenticator.Id
-    | typeof UserManagement.Id
+export const ServiceIds = [
+    Parking.Id,
+    ParkingManagement.Id,
+    SubscriptionManagement.Id,
+    UserAuthenticator.Id,
+    UserManagement.Id,
+] as const
+
+export type ServiceId = typeof ServiceIds[number];
 
 export declare namespace HealthCheck {
     type Shape = {
