@@ -10,6 +10,7 @@ import type * as ParkingManagementMessages from "@tardis/management/management_m
 import { ParkingService } from "@tardis/parking/parking_service_pb.ts"
 import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
 import { Health, HealthCheckResponse_ServingStatus as HealthStatus } from "@tardis/health/healthcheck_pb.ts";
+import { VehicleType } from "@tardis/common/common_messages_pb.ts";
 
 export declare namespace TransportLayer {
     type Shape = {
@@ -242,6 +243,7 @@ const ParkingSuper: EffectTagType<
 >();
 
 export class Parking extends ParkingSuper {
+    static VehicleType = VehicleType;
     static Effect: ClientEffect<typeof ParkingService> = 
         makeClient(ParkingService);
     static Layer: ProxyLayer<Parking> = 
