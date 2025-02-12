@@ -3,14 +3,13 @@ import type { DescService, DescMethodUnary, MessageInitShape, MessageShape } fro
 import { createClient, type Transport, type Client, type CallOptions } from "@connectrpc/connect";
 import { createConnectTransport, type ConnectTransportOptions } from "@connectrpc/connect-node";
 import { UserAuthenticatorService, UserManagementService } from "@tardis/authenticator/user_service_pb.ts";
-import type * as UserMessages from "@tardis/authenticator/user_messages_pb.ts"
-import { AuthStatus  } from "@tardis/authenticator/user_messages_pb.ts";
+import * as UserMessages from "@tardis/authenticator/user_messages_pb.ts"
 import { ParkingManagementService, SubscriptionManagementService } from "@tardis/management/management_service_pb.ts";
 import type * as ParkingManagementMessages from "@tardis/management/management_messages_pb.ts";
 import { ParkingService } from "@tardis/parking/parking_service_pb.ts"
 import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
 import { Health, HealthCheckResponse_ServingStatus as HealthStatus } from "@tardis/health/healthcheck_pb.ts";
-import { VehicleType } from "@tardis/common/common_messages_pb.ts";
+export * as Common from "@tardis/common/common_messages_pb.ts";
 
 export declare namespace TransportLayer {
     type Shape = {
@@ -102,6 +101,10 @@ const makeProxy = <
 
 type ProxyLayer<T, R = TransportLayer> = Layer.Layer<T, never, R>;
 
+export declare namespace UserAuthenticator {
+    type AuthStatus = UserMessages.AuthStatus
+}
+
 export declare namespace UserAuthenticator.Messages {
     type LoginRequest = UserMessages.LoginRequest;
     type LoginResponse = UserMessages.LoginResponse;
@@ -122,7 +125,7 @@ const UserAuthenticatorSuper : EffectTagType<
 >()
 
 export class UserAuthenticator extends UserAuthenticatorSuper {
-    static AuthStatus = AuthStatus;
+    static AuthStatus = UserMessages.AuthStatus;
     static Effect: ClientEffect<typeof UserAuthenticatorService> = 
         makeClient(UserAuthenticatorService);
     static Layer: ProxyLayer<UserAuthenticator> = 
@@ -243,7 +246,6 @@ const ParkingSuper: EffectTagType<
 >();
 
 export class Parking extends ParkingSuper {
-    static VehicleType = VehicleType;
     static Effect: ClientEffect<typeof ParkingService> = 
         makeClient(ParkingService);
     static Layer: ProxyLayer<Parking> = 
