@@ -8,7 +8,7 @@ import { ParkingManagementService, SubscriptionManagementService } from "@tardis
 import type * as ParkingManagementMessages from "@tardis/management/management_messages_pb.ts";
 import { ParkingService } from "@tardis/parking/parking_service_pb.ts"
 import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
-import { Health, HealthCheckResponse_ServingStatus as HealthStatus } from "@tardis/health/healthcheck_pb.ts";
+import { Health, HealthCheckResponse_ServingStatus as HealthStatus } from "@tardis/health/health_pb.ts";
 export * as Common from "@tardis/common/common_messages_pb.ts";
 
 export declare namespace TransportLayer {

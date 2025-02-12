@@ -6,3 +6,5 @@ lint:
 breaking:
   use:
     - FILE
+deps: 
+  - buf.build/grpc/grpc:9327911dce6e4b51a37ad5e93578c833
