@@ -8,7 +8,7 @@ import { ParkingManagementService, SubscriptionManagementService } from "@tardis
 import type * as ParkingManagementMessages from "@tardis/management/management_messages_pb.ts";
 import { ParkingService } from "@tardis/parking/parking_service_pb.ts"
 import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
-import { Health, HealthCheckResponse_ServingStatus as HealthStatus } from "@tardis/health/health_pb.ts";
+import { Health, type HealthCheckResponse } from "@tardis/health/health_pb.ts";
 export * as Common from "@tardis/common/common_messages_pb.ts";
 
 export declare namespace TransportLayer {
@@ -265,7 +265,7 @@ export type ServiceId = typeof ServiceIds[number];
 
 export declare namespace HealthCheck {
     type Shape = {
-        check: (service: ServiceId) => Effect.Effect<{ serving: boolean }>;
+        check: (service: ServiceId) => Effect.Effect<HealthCheckResponse, Cause.UnknownException>;
     }
 }
 
@@ -283,10 +283,7 @@ export class HealthCheck extends HealthSuper {
         Effect.gen(function*(){
             const client = yield* makeClient(Health);
             return HealthCheck.of({
-                check: (service) => Effect.tryPromise((signal) => client.check({ service }, { signal })).pipe(
-                    Effect.map(res => ({ serving: res.status === HealthStatus.SERVING })),
-                    Effect.catchAll(() => Effect.succeed({ serving: false }))
-                )
+                check: (service) => Effect.tryPromise((signal) => client.check({ service }, { signal }))
             })
         })
     static Layer: Layer.Layer<HealthCheck, never, TransportLayer> = Layer.effect(this, this.Effect);
