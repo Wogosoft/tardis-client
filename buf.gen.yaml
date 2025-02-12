@@ -6,5 +6,5 @@ plugins:
     - target=ts
     - import_extension=ts
 inputs:
-  - directory: proto
+  - module: buf.build/wogo/tardis:main
 clean: true
