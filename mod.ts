@@ -1,7 +1,7 @@
 import { type Cause, type Context, Effect, Layer } from "@effect";
 import type { DescService, DescMethodUnary, MessageInitShape, MessageShape } from "@bufbuild/protobuf"
 import { createClient, type Transport, type Client, type CallOptions } from "@connectrpc/connect";
-import { createConnectTransport, type ConnectTransportOptions } from "@connectrpc/connect-node";
+import { createConnectTransport, createGrpcTransport, type GrpcTransportOptions, type ConnectTransportOptions } from "@connectrpc/connect-node";
 import { UserAuthenticatorService, UserManagementService } from "@tardis/authenticator/user_service_pb.ts";
 import * as UserMessages from "@tardis/authenticator/user_messages_pb.ts"
 import { ParkingManagementService, SubscriptionManagementService } from "@tardis/management/management_service_pb.ts";
@@ -36,16 +36,29 @@ const TransportLayerSuper: EffectTagType<
 >();
 
 export class TransportLayer extends TransportLayerSuper {
-    static makeConnectTransport = (options: ConnectTransportOptions): Layer.Layer<TransportLayer> => {
+    static connectLayer = (options: ConnectTransportOptions): Layer.Layer<TransportLayer> => {
         return Layer.effect(TransportLayer, Effect.sync(() => {
             return { tx: createConnectTransport(options) }
         }))
     }
 
-    static makeTransport = (options: ConnectTransportOptions): Effect.Effect<Transport> => {
+    static connectEffect = (options: ConnectTransportOptions): Effect.Effect<Transport> => {
         return Effect.suspend(() => {
             return Effect
                 .succeed(createConnectTransport(options))
+        })
+    }
+
+    static grpcLayer = (options: GrpcTransportOptions): Layer.Layer<TransportLayer> => {
+        return Layer.effect(TransportLayer, Effect.sync(() => {
+            return { tx: createGrpcTransport(options) }
+        }))
+    }
+
+    static grpcEffect = (options: GrpcTransportOptions): Effect.Effect<Transport> => {
+        return Effect.suspend(() => {
+            return Effect
+                .succeed(createGrpcTransport(options))
         })
     }
 }
