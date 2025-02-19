@@ -5,11 +5,12 @@ import { createConnectTransport, createGrpcTransport, type GrpcTransportOptions,
 import { UserAuthenticatorService, UserManagementService } from "@tardis/authenticator/user_service_pb.ts";
 import * as UserMessages from "@tardis/authenticator/user_messages_pb.ts"
 import { ParkingManagementService, SubscriptionManagementService } from "@tardis/management/management_service_pb.ts";
-import type * as ParkingManagementMessages from "@tardis/management/management_messages_pb.ts";
+import * as ParkingManagementMessages from "@tardis/management/management_messages_pb.ts";
 import { ParkingService } from "@tardis/parking/parking_service_pb.ts"
 import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
 import { Health, type HealthCheckResponse } from "@tardis/health/health_pb.ts";
 export * as Common from "@tardis/common/common_messages_pb.ts";
+export { ParkingManagementMessages };
 
 export declare namespace TransportLayer {
     type Shape = {
@@ -114,6 +115,22 @@ const makeProxy = <
 
 type ProxyLayer<T, R = TransportLayer> = Layer.Layer<T, never, R>;
 
+type StubBuilder<T extends DescService> = 
+    (partial: Partial<ClientProxy<T>>) => 
+        Effect.Effect<ClientProxy<T>, never, TransportLayer>
+
+const makeClientStubBuilder = <
+    T extends DescService
+>(service: T) => (partial: Partial<ClientProxy<T>> = {}) : Effect.Effect<ClientProxy<T>, never, TransportLayer> => {
+    return Effect.gen(function*(){
+        const client = yield* makeProxy(makeClient(service));
+        return {
+            ...client,
+            ...partial
+        }
+    })
+}
+
 export declare namespace UserAuthenticator {
     type AuthStatus = UserMessages.AuthStatus
 }
@@ -139,6 +156,8 @@ const UserAuthenticatorSuper : EffectTagType<
 
 export class UserAuthenticator extends UserAuthenticatorSuper {
     static AuthStatus = UserMessages.AuthStatus;
+    static Stub: StubBuilder<typeof UserAuthenticatorService> = 
+        makeClientStubBuilder(UserAuthenticatorService)
     static Effect: ClientEffect<typeof UserAuthenticatorService> = 
         makeClient(UserAuthenticatorService);
     static Layer: ProxyLayer<UserAuthenticator> = 
@@ -163,6 +182,8 @@ const UserManagementSuper: EffectTagType<
 >();
 
 export class UserManagement extends UserManagementSuper {
+    static Stub: StubBuilder<typeof UserManagementService> = 
+        makeClientStubBuilder(UserManagementService)
     static Effect: ClientEffect<typeof UserManagementService> = 
         makeClient(UserManagementService);
     static Layer: ProxyLayer<UserManagement> = 
@@ -192,7 +213,10 @@ const ParkingManagementSuper : EffectTagType<
     ClientProxy<typeof ParkingManagementService>
 >();
 
-export class ParkingManagement extends ParkingManagementSuper{
+export class ParkingManagement extends ParkingManagementSuper {
+    static SubscriptionStatus = ParkingManagementMessages.SubscriptionStatus;
+    static Stub: StubBuilder<typeof ParkingManagementService> = 
+        makeClientStubBuilder(ParkingManagementService)
     static Effect: ClientEffect<typeof ParkingManagementService> = 
         makeClient(ParkingManagementService);
     static Layer: ProxyLayer<ParkingManagement> = 
@@ -231,6 +255,9 @@ const SubscriptionManagementSuper : EffectTagType<
 >();
 
 export class SubscriptionManagement extends SubscriptionManagementSuper {
+    static SubscriptionStatus = ParkingManagementMessages.SubscriptionStatus;
+    static Stub: StubBuilder<typeof SubscriptionManagementService> = 
+        makeClientStubBuilder(SubscriptionManagementService)
     static Effect: ClientEffect<typeof SubscriptionManagementService> = 
         makeClient(SubscriptionManagementService);
     static Layer: ProxyLayer<SubscriptionManagement> = 
@@ -259,6 +286,8 @@ const ParkingSuper: EffectTagType<
 >();
 
 export class Parking extends ParkingSuper {
+    static Stub: StubBuilder<typeof ParkingService> = 
+        makeClientStubBuilder(ParkingService)
     static Effect: ClientEffect<typeof ParkingService> = 
         makeClient(ParkingService);
     static Layer: ProxyLayer<Parking> = 
