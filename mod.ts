@@ -177,7 +177,6 @@ export declare namespace UserAuthenticator.Messages {
     type ValidateAuthResponse = UserMessages.ValidateAuthResponse;
 }
 
-
 const UserAuthenticatorSuper : EffectTagType<
     UserAuthenticator,
     "@clients/UserAuthenticator",
@@ -189,6 +188,9 @@ const UserAuthenticatorSuper : EffectTagType<
 
 export class UserAuthenticator extends UserAuthenticatorSuper {
     static AuthStatus = UserMessages.AuthStatus;
+    static get ServiceDefinition(): typeof UserAuthenticatorService {
+        return UserAuthenticatorService
+    }
     static Stub: StubBuilder<typeof UserAuthenticatorService> = 
         makeClientStubBuilder(UserAuthenticatorService)
     static Effect: ClientEffect<typeof UserAuthenticatorService> = 
@@ -215,6 +217,9 @@ const UserManagementSuper: EffectTagType<
 >();
 
 export class UserManagement extends UserManagementSuper {
+    static get ServiceDefinition(): typeof UserManagementService {
+        return UserManagementService
+    }
     static Stub: StubBuilder<typeof UserManagementService> = 
         makeClientStubBuilder(UserManagementService)
     static Effect: ClientEffect<typeof UserManagementService> = 
@@ -248,6 +253,9 @@ const ParkingManagementSuper : EffectTagType<
 
 export class ParkingManagement extends ParkingManagementSuper {
     static SubscriptionStatus = ParkingManagementMessages.SubscriptionStatus;
+    static get ServiceDefinition(): typeof ParkingManagementService {
+        return ParkingManagementService
+    }
     static Stub: StubBuilder<typeof ParkingManagementService> = 
         makeClientStubBuilder(ParkingManagementService)
     static Effect: ClientEffect<typeof ParkingManagementService> = 
@@ -276,6 +284,8 @@ export declare namespace SubscriptionManagement.Messages {
     type RenewCustomerSubscriptionResponse = ParkingManagementMessages.RenewCustomerSubscriptionResponse;
     type UpdateCustomerSubscriptionRequest = ParkingManagementMessages.UpdateCustomerSubscriptionRequest;
     type UpdateCustomerSubscriptionResponse = ParkingManagementMessages.UpdateCustomerSubscriptionResponse;
+    type GetSubscriptionByPlateRequest = ParkingManagementMessages.GetSubscriptionByPlateRequest;
+    type GetSubscriptionByPlateResponse = ParkingManagementMessages.GetSubscriptionByPlateResponse;
 };
 
 const SubscriptionManagementSuper : EffectTagType<
@@ -289,6 +299,9 @@ const SubscriptionManagementSuper : EffectTagType<
 
 export class SubscriptionManagement extends SubscriptionManagementSuper {
     static SubscriptionStatus = ParkingManagementMessages.SubscriptionStatus;
+    static get ServiceDefinition(): typeof SubscriptionManagementService {
+        return SubscriptionManagementService
+    }
     static Stub: StubBuilder<typeof SubscriptionManagementService> = 
         makeClientStubBuilder(SubscriptionManagementService)
     static Effect: ClientEffect<typeof SubscriptionManagementService> = 
@@ -319,6 +332,9 @@ const ParkingSuper: EffectTagType<
 >();
 
 export class Parking extends ParkingSuper {
+    static get ServiceDefinition(): typeof ParkingService {
+        return ParkingService
+    }
     static Stub: StubBuilder<typeof ParkingService> = 
         makeClientStubBuilder(ParkingService)
     static Effect: ClientEffect<typeof ParkingService> = 
