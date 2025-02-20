@@ -150,9 +150,29 @@ type ProxyLayer<T, R = TransportLayer> = Layer.Layer<T, never, R>;
 
 type StubBuilder<T extends DescService> = 
     (partial: Partial<ClientProxy<T>>) => 
-        Effect.Effect<ClientProxy<T>, never, TransportLayer>
+        Effect.Effect<ClientProxy<T>>
 
 const makeClientStubBuilder = <
+    T extends DescService
+>(service: T) => (partial: Partial<ClientProxy<T>> = {}) : Effect.Effect<ClientProxy<T>> => {
+    return Effect.sync(function(){
+        const stub = Object.fromEntries(Object
+            .keys(service)
+            .map((op) => [op, () => {
+                throw new Error(`Unimplemented Operation ${op}`)
+            }])) as unknown as ClientProxy<T>;
+        return {
+            ...stub,
+            ...partial
+        }
+    })
+}
+
+type PartialBuilder<T extends DescService> = 
+    (partial: Partial<ClientProxy<T>>) => 
+        Effect.Effect<ClientProxy<T>, never, TransportLayer>;
+
+const makePartialMockBuilder = <
     T extends DescService
 >(service: T) => (partial: Partial<ClientProxy<T>> = {}) : Effect.Effect<ClientProxy<T>, never, TransportLayer> => {
     return Effect.gen(function*(){
@@ -191,6 +211,10 @@ export class UserAuthenticator extends UserAuthenticatorSuper {
     static get ServiceDefinition(): typeof UserAuthenticatorService {
         return UserAuthenticatorService
     }
+    static Partial: PartialBuilder<typeof UserAuthenticatorService> =
+        makePartialMockBuilder(UserAuthenticatorService)
+    static Mock: PartialBuilder<typeof UserAuthenticatorService> = 
+        makePartialMockBuilder(UserAuthenticatorService)
     static Stub: StubBuilder<typeof UserAuthenticatorService> = 
         makeClientStubBuilder(UserAuthenticatorService)
     static Effect: ClientEffect<typeof UserAuthenticatorService> = 
@@ -220,6 +244,8 @@ export class UserManagement extends UserManagementSuper {
     static get ServiceDefinition(): typeof UserManagementService {
         return UserManagementService
     }
+    static Mock: PartialBuilder<typeof UserManagementService> = 
+        makePartialMockBuilder(UserManagementService)
     static Stub: StubBuilder<typeof UserManagementService> = 
         makeClientStubBuilder(UserManagementService)
     static Effect: ClientEffect<typeof UserManagementService> = 
@@ -256,6 +282,8 @@ export class ParkingManagement extends ParkingManagementSuper {
     static get ServiceDefinition(): typeof ParkingManagementService {
         return ParkingManagementService
     }
+    static Mock: PartialBuilder<typeof ParkingManagementService> = 
+        makePartialMockBuilder(ParkingManagementService)
     static Stub: StubBuilder<typeof ParkingManagementService> = 
         makeClientStubBuilder(ParkingManagementService)
     static Effect: ClientEffect<typeof ParkingManagementService> = 
@@ -302,6 +330,8 @@ export class SubscriptionManagement extends SubscriptionManagementSuper {
     static get ServiceDefinition(): typeof SubscriptionManagementService {
         return SubscriptionManagementService
     }
+    static Mock: PartialBuilder<typeof SubscriptionManagementService> = 
+        makePartialMockBuilder(SubscriptionManagementService)
     static Stub: StubBuilder<typeof SubscriptionManagementService> = 
         makeClientStubBuilder(SubscriptionManagementService)
     static Effect: ClientEffect<typeof SubscriptionManagementService> = 
@@ -335,6 +365,8 @@ export class Parking extends ParkingSuper {
     static get ServiceDefinition(): typeof ParkingService {
         return ParkingService
     }
+    static Mock: PartialBuilder<typeof ParkingService> = 
+        makePartialMockBuilder(ParkingService)
     static Stub: StubBuilder<typeof ParkingService> = 
         makeClientStubBuilder(ParkingService)
     static Effect: ClientEffect<typeof ParkingService> = 
