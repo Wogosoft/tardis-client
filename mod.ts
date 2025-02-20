@@ -1,7 +1,20 @@
 import { type Cause, type Context, Effect, Layer } from "@effect";
 import type { DescService, DescMethodUnary, MessageInitShape, MessageShape } from "@bufbuild/protobuf"
-import { createClient, type Transport, type Client, type CallOptions } from "@connectrpc/connect";
-import { createConnectTransport, createGrpcTransport, type GrpcTransportOptions, type ConnectTransportOptions } from "@connectrpc/connect-node";
+import { 
+    createClient, 
+    type Transport, 
+    type Client, 
+    type CallOptions, 
+    createRouterTransport, 
+    type ConnectRouterOptions, 
+    type ConnectRouter
+} from "@connectrpc/connect";
+import { 
+    createConnectTransport, 
+    createGrpcTransport, 
+    type GrpcTransportOptions, 
+    type ConnectTransportOptions 
+} from "@connectrpc/connect-node";
 import { UserAuthenticatorService, UserManagementService } from "@tardis/authenticator/user_service_pb.ts";
 import * as UserMessages from "@tardis/authenticator/user_messages_pb.ts"
 import { ParkingManagementService, SubscriptionManagementService } from "@tardis/management/management_service_pb.ts";
@@ -9,6 +22,7 @@ import * as ParkingManagementMessages from "@tardis/management/management_messag
 import { ParkingService } from "@tardis/parking/parking_service_pb.ts"
 import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
 import { Health, type HealthCheckResponse } from "@tardis/health/health_pb.ts";
+import type { CommonTransportOptions } from "@connectrpc/connect/protocol";
 export * as Common from "@tardis/common/common_messages_pb.ts";
 export { ParkingManagementMessages };
 
@@ -37,6 +51,25 @@ const TransportLayerSuper: EffectTagType<
 >();
 
 export class TransportLayer extends TransportLayerSuper {
+    static routerLayer = (routes: (router: ConnectRouter) => void, options?: {
+        transport?: Partial<CommonTransportOptions>;
+        router?: ConnectRouterOptions;
+    }): Layer.Layer<TransportLayer> => {
+        return Layer.effect(TransportLayer, Effect.sync(() => {
+            return { tx: createRouterTransport(routes, options) }
+        }))
+    }
+
+    static routerEffect = (routes: (router: ConnectRouter) => void, options?: {
+        transport?: Partial<CommonTransportOptions>;
+        router?: ConnectRouterOptions;
+    }): Effect.Effect<Transport> => {
+        return Effect.suspend(() => {
+            return Effect
+                .succeed(createRouterTransport(routes, options))
+        })
+    }
+
     static connectLayer = (options: ConnectTransportOptions): Layer.Layer<TransportLayer> => {
         return Layer.effect(TransportLayer, Effect.sync(() => {
             return { tx: createConnectTransport(options) }
