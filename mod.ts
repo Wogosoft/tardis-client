@@ -402,6 +402,8 @@ const HealthSuper: EffectTagType<
 >();
 
 export class HealthCheck extends HealthSuper {
+    static RawClient: ClientEffect<typeof Health> =
+        makeClient(Health);
     static Effect: Effect.Effect<HealthCheck.Shape, never, TransportLayer> = 
         Effect.gen(function*(){
             const client = yield* makeClient(Health);
