@@ -227,7 +227,7 @@ export class UserAuthenticator extends UserAuthenticatorSuper {
         return UserAuthenticatorService
     }
 
-    static Raw = (tx: Transport) => 
+    static Raw = (tx: Transport): Client<typeof UserAuthenticatorService> => 
         createClient(this.ServiceDefinition, tx);
     static Partial: PartialBuilder<typeof UserAuthenticatorService> =
         makePartialMockBuilder(UserAuthenticatorService)
@@ -262,7 +262,7 @@ export class UserManagement extends UserManagementSuper {
     static get ServiceDefinition(): typeof UserManagementService {
         return UserManagementService
     }
-    static Raw = (tx: Transport) => 
+    static Raw = (tx: Transport): Client<typeof UserManagementService> => 
         createClient(this.ServiceDefinition, tx);
     static Mock: PartialBuilder<typeof UserManagementService> = 
         makePartialMockBuilder(UserManagementService)
@@ -302,7 +302,7 @@ export class ParkingManagement extends ParkingManagementSuper {
     static get ServiceDefinition(): typeof ParkingManagementService {
         return ParkingManagementService
     }
-    static Raw = (tx: Transport) => 
+    static Raw = (tx: Transport): Client<typeof ParkingManagementService> => 
         createClient(this.ServiceDefinition, tx);
     static Mock: PartialBuilder<typeof ParkingManagementService> = 
         makePartialMockBuilder(ParkingManagementService)
@@ -352,7 +352,7 @@ export class SubscriptionManagement extends SubscriptionManagementSuper {
     static get ServiceDefinition(): typeof SubscriptionManagementService {
         return SubscriptionManagementService
     }
-    static Raw = (tx: Transport) => 
+    static Raw = (tx: Transport): Client<typeof SubscriptionManagementService> => 
         createClient(this.ServiceDefinition, tx);
     static Mock: PartialBuilder<typeof SubscriptionManagementService> = 
         makePartialMockBuilder(SubscriptionManagementService)
@@ -389,7 +389,7 @@ export class Parking extends ParkingSuper {
     static get ServiceDefinition(): typeof ParkingService {
         return ParkingService
     }
-    static Raw = (tx: Transport) => 
+    static Raw = (tx: Transport): Client<typeof ParkingService> => 
         createClient(this.ServiceDefinition, tx);
     static Mock: PartialBuilder<typeof ParkingService> = 
         makePartialMockBuilder(ParkingService)
@@ -428,7 +428,7 @@ const HealthSuper: EffectTagType<
 >();
 
 export class HealthCheck extends HealthSuper {
-    static Raw = (tx: Transport) => 
+    static Raw = (tx: Transport): Client<typeof Health> => 
         createClient(Health, tx);
     static RawClient: ClientEffect<typeof Health> =
         makeClient(Health);
