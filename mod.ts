@@ -51,6 +51,13 @@ const TransportLayerSuper: EffectTagType<
 >();
 
 export class TransportLayer extends TransportLayerSuper {
+    static router = (routes: (router: ConnectRouter) => void, options?: {
+        transport?: Partial<CommonTransportOptions>;
+        router?: ConnectRouterOptions;
+    }): Transport => {
+        return createRouterTransport(routes, options)
+    }
+
     static routerLayer = (routes: (router: ConnectRouter) => void, options?: {
         transport?: Partial<CommonTransportOptions>;
         router?: ConnectRouterOptions;
@@ -70,6 +77,10 @@ export class TransportLayer extends TransportLayerSuper {
         })
     }
 
+    static connect = (options: ConnectTransportOptions): Transport => {
+        return createConnectTransport(options)
+    }
+
     static connectLayer = (options: ConnectTransportOptions): Layer.Layer<TransportLayer> => {
         return Layer.effect(TransportLayer, Effect.sync(() => {
             return { tx: createConnectTransport(options) }
@@ -81,6 +92,10 @@ export class TransportLayer extends TransportLayerSuper {
             return Effect
                 .succeed(createConnectTransport(options))
         })
+    }
+
+    static grpc = (options: GrpcTransportOptions): Transport => {
+        return createGrpcTransport(options)
     }
 
     static grpcLayer = (options: GrpcTransportOptions): Layer.Layer<TransportLayer> => {
@@ -211,6 +226,9 @@ export class UserAuthenticator extends UserAuthenticatorSuper {
     static get ServiceDefinition(): typeof UserAuthenticatorService {
         return UserAuthenticatorService
     }
+
+    static Raw = (tx: Transport) => 
+        createClient(this.ServiceDefinition, tx);
     static Partial: PartialBuilder<typeof UserAuthenticatorService> =
         makePartialMockBuilder(UserAuthenticatorService)
     static Mock: PartialBuilder<typeof UserAuthenticatorService> = 
@@ -244,6 +262,8 @@ export class UserManagement extends UserManagementSuper {
     static get ServiceDefinition(): typeof UserManagementService {
         return UserManagementService
     }
+    static Raw = (tx: Transport) => 
+        createClient(this.ServiceDefinition, tx);
     static Mock: PartialBuilder<typeof UserManagementService> = 
         makePartialMockBuilder(UserManagementService)
     static Stub: StubBuilder<typeof UserManagementService> = 
@@ -282,6 +302,8 @@ export class ParkingManagement extends ParkingManagementSuper {
     static get ServiceDefinition(): typeof ParkingManagementService {
         return ParkingManagementService
     }
+    static Raw = (tx: Transport) => 
+        createClient(this.ServiceDefinition, tx);
     static Mock: PartialBuilder<typeof ParkingManagementService> = 
         makePartialMockBuilder(ParkingManagementService)
     static Stub: StubBuilder<typeof ParkingManagementService> = 
@@ -330,6 +352,8 @@ export class SubscriptionManagement extends SubscriptionManagementSuper {
     static get ServiceDefinition(): typeof SubscriptionManagementService {
         return SubscriptionManagementService
     }
+    static Raw = (tx: Transport) => 
+        createClient(this.ServiceDefinition, tx);
     static Mock: PartialBuilder<typeof SubscriptionManagementService> = 
         makePartialMockBuilder(SubscriptionManagementService)
     static Stub: StubBuilder<typeof SubscriptionManagementService> = 
@@ -365,6 +389,8 @@ export class Parking extends ParkingSuper {
     static get ServiceDefinition(): typeof ParkingService {
         return ParkingService
     }
+    static Raw = (tx: Transport) => 
+        createClient(this.ServiceDefinition, tx);
     static Mock: PartialBuilder<typeof ParkingService> = 
         makePartialMockBuilder(ParkingService)
     static Stub: StubBuilder<typeof ParkingService> = 
@@ -402,6 +428,8 @@ const HealthSuper: EffectTagType<
 >();
 
 export class HealthCheck extends HealthSuper {
+    static Raw = (tx: Transport) => 
+        createClient(Health, tx);
     static RawClient: ClientEffect<typeof Health> =
         makeClient(Health);
     static Effect: Effect.Effect<HealthCheck.Shape, never, TransportLayer> = 
