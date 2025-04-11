@@ -1,6 +1,6 @@
 import { describe, it } from "jsr:@std/testing/bdd";
 import { expect } from "jsr:@std/expect";
-import { wrapClient } from "./mod.ts";
+import { UserAuthenticator, wrapClient } from "./mod.ts";
 import type { CallOptions, Client } from "@connectrpc/connect";
 import type { UserAuthenticatorService } from "@tardis/authenticator/user_service_pb.ts"
 import type { LoginRequest, LoginResponse, LogoutRequest, LogoutResponse, AuthToken, ValidateAuthRequest, ValidateAuthResponse } from "./gen/wogo/tardis/authenticator/v1/user_messages_pb.ts";
@@ -53,4 +53,13 @@ describe("Client proxy", () => {
             })
         }
     });
+
+    it("should create a mock with a single impl", async () => {
+        const build = UserAuthenticator.Partial((key) => Effect.succeed(key))
+
+        const client = await Effect.runPromise(build);
+
+        const result = await client.login({}).pipe(Effect.runPromise)
+        expect(result).toBe("login");
+    })
 })

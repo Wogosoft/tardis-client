@@ -23,6 +23,7 @@ import { ParkingService } from "@tardis/parking/parking_service_pb.ts"
 import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
 import { Health, type HealthCheckResponse } from "@tardis/health/health_pb.ts";
 import type { CommonTransportOptions } from "@connectrpc/connect/protocol";
+import { type ClientError, refineError } from "./errors.ts";
 export * as Common from "@tardis/common/common_messages_pb.ts";
 export { ParkingManagementMessages };
 
@@ -128,7 +129,7 @@ type ClientProxy<Desc extends DescService> = {
         Desc["method"][P] extends DescMethodUnary<infer I, infer O> 
         ? (request: MessageInitShape<I>, options?: CallOptions) => Effect.Effect<
             MessageShape<O>,
-            Cause.UnknownException
+            ClientError
         > 
         : never;
 };
@@ -140,12 +141,17 @@ export const wrapClient = <T extends DescService>(client: Client<T>): ClientProx
                 // deno-lint-ignore no-explicit-any
                 type UnaryFn = (request: MessageInitShape<any>, options?: CallOptions) => Promise<MessageShape<any>>
                 // deno-lint-ignore no-explicit-any
-                return (init: MessageInitShape<any>, opts: CallOptions = {}) => Effect.tryPromise((signal) => {
-                    return (target[p as keyof Client<T>] as UnaryFn)(init, { 
-                        signal,
-                        ...opts
-                    });
-                })
+                return (init: MessageInitShape<any>, opts: CallOptions = {}) => Effect.tryPromise(
+                    { 
+                        try: (signal) => {
+                            return (target[p as keyof Client<T>] as UnaryFn)(init, { 
+                                signal,
+                                ...opts
+                            });
+                        },
+                        catch: (error) => refineError(error)
+                    }
+                )
             }
             return undefined;
         }
@@ -171,8 +177,8 @@ const makeClientStubBuilder = <
     T extends DescService
 >(service: T) => (partial: Partial<ClientProxy<T>> = {}) : Effect.Effect<ClientProxy<T>> => {
     return Effect.sync(function(){
-        const stub = Object.fromEntries(Object
-            .keys(service)
+        const stub = Object.fromEntries(
+            service.methods.map(m => m.localName)
             .map((op) => [op, () => {
                 throw new Error(`Unimplemented Operation ${op}`)
             }])) as unknown as ClientProxy<T>;
@@ -183,7 +189,7 @@ const makeClientStubBuilder = <
     })
 }
 
-type PartialBuilder<T extends DescService> = 
+type PartialMockBuilder<T extends DescService> = 
     (partial: Partial<ClientProxy<T>>) => 
         Effect.Effect<ClientProxy<T>, never, TransportLayer>;
 
@@ -197,6 +203,46 @@ const makePartialMockBuilder = <
             ...partial
         }
     })
+}
+
+type CatchAllImpl = (operation: string, payload: unknown) => Effect.Effect<unknown>
+type PartialBuilder<T extends DescService> = 
+    <Arg extends Partial<ClientProxy<T>> | CatchAllImpl>(partial: Arg) => 
+        Effect.Effect<ClientProxy<T>, never, 
+        // deno-lint-ignore no-explicit-any
+        Arg extends ((...args: any[]) => any) 
+        ? never
+        : TransportLayer>;
+
+const makePartialBuilder = <
+    T extends DescService
+>(service: T) => 
+    <Arg extends Partial<ClientProxy<T>> | CatchAllImpl>(partial: Arg) : 
+        // deno-lint-ignore no-explicit-any
+        Effect.Effect<ClientProxy<T>, never, Arg extends ((...args: any[]) => any) 
+        ? never
+        : TransportLayer
+    > => {
+    return Effect.gen(function*(){
+        if( partial instanceof Function ){
+            const entries = service.methods.map(m => m.localName)
+                .map(
+                    key => [key, (payload: unknown) => partial(key, payload)] as const
+                );
+            const res = Object.fromEntries(entries) as unknown as ClientProxy<T>;
+            return res
+        }
+
+        const client = yield* makeProxy(makeClient(service));
+        return {
+            ...client,
+            ...partial
+        }
+    // deno-lint-ignore no-explicit-any
+    }) as Effect.Effect<ClientProxy<T>, never, Arg extends ((...args: any[]) => any) 
+        ? never
+        : TransportLayer
+    >
 }
 
 export declare namespace UserAuthenticator {
@@ -230,8 +276,8 @@ export class UserAuthenticator extends UserAuthenticatorSuper {
     static Raw = (tx: Transport): Client<typeof UserAuthenticatorService> => 
         createClient(this.ServiceDefinition, tx);
     static Partial: PartialBuilder<typeof UserAuthenticatorService> =
-        makePartialMockBuilder(UserAuthenticatorService)
-    static Mock: PartialBuilder<typeof UserAuthenticatorService> = 
+        makePartialBuilder(UserAuthenticatorService)
+    static Mock: PartialMockBuilder<typeof UserAuthenticatorService> = 
         makePartialMockBuilder(UserAuthenticatorService)
     static Stub: StubBuilder<typeof UserAuthenticatorService> = 
         makeClientStubBuilder(UserAuthenticatorService)
@@ -264,7 +310,9 @@ export class UserManagement extends UserManagementSuper {
     }
     static Raw = (tx: Transport): Client<typeof UserManagementService> => 
         createClient(this.ServiceDefinition, tx);
-    static Mock: PartialBuilder<typeof UserManagementService> = 
+    static Partial: PartialBuilder<typeof UserManagementService> = 
+        makePartialBuilder(UserManagementService)
+    static Mock: PartialMockBuilder<typeof UserManagementService> = 
         makePartialMockBuilder(UserManagementService)
     static Stub: StubBuilder<typeof UserManagementService> = 
         makeClientStubBuilder(UserManagementService)
@@ -304,7 +352,9 @@ export class ParkingManagement extends ParkingManagementSuper {
     }
     static Raw = (tx: Transport): Client<typeof ParkingManagementService> => 
         createClient(this.ServiceDefinition, tx);
-    static Mock: PartialBuilder<typeof ParkingManagementService> = 
+    static Partial: PartialBuilder<typeof ParkingManagementService> = 
+        makePartialBuilder(ParkingManagementService)
+    static Mock: PartialMockBuilder<typeof ParkingManagementService> = 
         makePartialMockBuilder(ParkingManagementService)
     static Stub: StubBuilder<typeof ParkingManagementService> = 
         makeClientStubBuilder(ParkingManagementService)
@@ -354,7 +404,9 @@ export class SubscriptionManagement extends SubscriptionManagementSuper {
     }
     static Raw = (tx: Transport): Client<typeof SubscriptionManagementService> => 
         createClient(this.ServiceDefinition, tx);
-    static Mock: PartialBuilder<typeof SubscriptionManagementService> = 
+    static Partial: PartialBuilder<typeof SubscriptionManagementService> = 
+        makePartialBuilder(SubscriptionManagementService)
+    static Mock: PartialMockBuilder<typeof SubscriptionManagementService> = 
         makePartialMockBuilder(SubscriptionManagementService)
     static Stub: StubBuilder<typeof SubscriptionManagementService> = 
         makeClientStubBuilder(SubscriptionManagementService)
@@ -391,7 +443,9 @@ export class Parking extends ParkingSuper {
     }
     static Raw = (tx: Transport): Client<typeof ParkingService> => 
         createClient(this.ServiceDefinition, tx);
-    static Mock: PartialBuilder<typeof ParkingService> = 
+    static Partial: PartialBuilder<typeof ParkingService> = 
+        makePartialBuilder(ParkingService)
+    static Mock: PartialMockBuilder<typeof ParkingService> = 
         makePartialMockBuilder(ParkingService)
     static Stub: StubBuilder<typeof ParkingService> = 
         makeClientStubBuilder(ParkingService)
