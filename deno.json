@@ -7,7 +7,7 @@
     "test": "deno test mod.spec.ts"
   },
   "publish": {
-    "include": ["./gen/wogo/tardis", "./gen/grpc/health", "./mod.ts"]
+    "include": ["./gen/wogo/tardis", "./gen/grpc/health", "./mod.ts", "./errors.ts"]
   },
   "lint": {
     "rules": {

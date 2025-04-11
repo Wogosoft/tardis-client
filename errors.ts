@@ -14,7 +14,7 @@ class Cancelled extends GrpcError {
        super(raw);
        this._tag = "Cancelled";
    } 
-   get code(){ return 1 as const }
+   get code(): 1 { return 1 }
 }
 class Unknown extends GrpcError {
    readonly _tag: "Unknown";
@@ -22,7 +22,7 @@ class Unknown extends GrpcError {
        super(raw);
        this._tag = "Unknown";
    } 
-   get code(){ return 2 as const }
+   get code(): 2 { return 2 }
 }
 class InvalidArgument extends GrpcError {
    readonly _tag: "InvalidArgument";
@@ -30,7 +30,7 @@ class InvalidArgument extends GrpcError {
        super(raw);
        this._tag = "InvalidArgument";
    } 
-   get code(){ return 3 as const }
+   get code(): 3 { return 3 }
 }
 class DeadlineExceeded extends GrpcError {
    readonly _tag: "DeadlineExceeded";
@@ -38,7 +38,7 @@ class DeadlineExceeded extends GrpcError {
        super(raw);
        this._tag = "DeadlineExceeded";
    } 
-   get code(){ return 4 as const }
+   get code(): 4 { return 4 }
 }
 class NotFound extends GrpcError {
    readonly _tag: "NotFound";
@@ -46,7 +46,7 @@ class NotFound extends GrpcError {
        super(raw);
        this._tag = "NotFound";
    } 
-   get code(){ return 5 as const }
+   get code(): 5 { return 5 }
 }
 class AlreadyExists extends GrpcError {
    readonly _tag: "AlreadyExists";
@@ -54,7 +54,7 @@ class AlreadyExists extends GrpcError {
        super(raw);
        this._tag = "AlreadyExists";
    } 
-   get code(){ return 6 as const }
+   get code(): 6 { return 6 }
 }
 class PermissionDenied extends GrpcError {
    readonly _tag: "PermissionDenied";
@@ -62,7 +62,7 @@ class PermissionDenied extends GrpcError {
        super(raw);
        this._tag = "PermissionDenied";
    } 
-   get code(){ return 7 as const }
+   get code(): 7 { return 7 }
 }
 class ResourceExhausted extends GrpcError {
    readonly _tag: "ResourceExhausted";
@@ -70,7 +70,7 @@ class ResourceExhausted extends GrpcError {
        super(raw);
        this._tag = "ResourceExhausted";
    } 
-   get code(){ return 8 as const }
+   get code(): 8 { return 8 }
 }
 class FailedPrecondition extends GrpcError {
    readonly _tag: "FailedPrecondition";
@@ -78,7 +78,7 @@ class FailedPrecondition extends GrpcError {
        super(raw);
        this._tag = "FailedPrecondition";
    } 
-   get code(){ return 9 as const }
+   get code(): 9 { return 9 }
 }
 class Aborted extends GrpcError {
    readonly _tag: "Aborted";
@@ -86,7 +86,7 @@ class Aborted extends GrpcError {
        super(raw);
        this._tag = "Aborted";
    } 
-   get code(){ return 10 as const }
+   get code(): 10 { return 10 }
 }
 class OutOfRange extends GrpcError {
    readonly _tag: "OutOfRange";
@@ -94,7 +94,7 @@ class OutOfRange extends GrpcError {
        super(raw);
        this._tag = "OutOfRange";
    } 
-   get code(){ return 11 as const }
+   get code(): 11 { return 11 }
 }
 class Unimplemented extends GrpcError {
    readonly _tag: "Unimplemented";
@@ -102,7 +102,7 @@ class Unimplemented extends GrpcError {
        super(raw);
        this._tag = "Unimplemented";
    } 
-   get code(){ return 12 as const }
+   get code(): 12 { return 12 }
 }
 class Internal extends GrpcError {
    readonly _tag: "Internal";
@@ -110,7 +110,7 @@ class Internal extends GrpcError {
        super(raw);
        this._tag = "Internal";
    } 
-   get code(){ return 13 as const }
+   get code(): 13 { return 13 }
 }
 class Unavailable extends GrpcError {
    readonly _tag: "Unavailable";
@@ -118,7 +118,7 @@ class Unavailable extends GrpcError {
        super(raw);
        this._tag = "Unavailable";
    } 
-   get code(){ return 14 as const }
+   get code(): 14 { return 14 }
 }
 class DataLoss extends GrpcError {
    readonly _tag: "DataLoss";
@@ -126,7 +126,7 @@ class DataLoss extends GrpcError {
        super(raw);
        this._tag = "DataLoss";
    } 
-   get code(){ return 15 as const }
+   get code(): 15 { return 15 }
 }
 class Unauthenticated extends GrpcError {
    readonly _tag: "Unauthenticated";
@@ -134,7 +134,7 @@ class Unauthenticated extends GrpcError {
        super(raw);
        this._tag = "Unauthenticated";
    } 
-   get code(){ return 16 as const }
+   get code(): 16 { return 16 }
 }
 
 const RawErrorSchema = Schema.Struct({
