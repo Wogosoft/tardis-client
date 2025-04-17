@@ -16,132 +16,116 @@ const omitCode = (input: Input) => omit("code")(input)
 class GrpcError extends Data.Error<RawError>{}
 
 class Cancelled extends GrpcError {
-   readonly _tag: "Cancelled";
+   readonly _tag: "Cancelled" = "Cancelled"
+   readonly code: 1 = 1
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "Cancelled";
-   } 
-   get code(): 1 { return 1 }
+   }
 }
 class Unknown extends GrpcError {
-   readonly _tag: "Unknown";
+   readonly _tag: "Unknown" = "Unknown"
+   readonly code: 2 = 2
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "Unknown";
-   } 
-   get code(): 2 { return 2 }
+   }
 }
 class InvalidArgument extends GrpcError {
-   readonly _tag: "InvalidArgument";
+   readonly _tag: "InvalidArgument" = "InvalidArgument"
+   readonly code: 3 = 3
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "InvalidArgument";
-   } 
-   get code(): 3 { return 3 }
+   }
 }
 class DeadlineExceeded extends GrpcError {
-   readonly _tag: "DeadlineExceeded";
+   readonly _tag: "DeadlineExceeded" = "DeadlineExceeded"
+   readonly code: 4 = 4
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "DeadlineExceeded";
-   } 
-   get code(): 4 { return 4 }
+   }
 }
 class NotFound extends GrpcError {
-   readonly _tag: "NotFound";
+   readonly _tag: "NotFound" = "NotFound"
+   readonly code: 5 = 5
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "NotFound";
-   } 
-   get code(): 5 { return 5 }
+   }
 }
 class AlreadyExists extends GrpcError {
-   readonly _tag: "AlreadyExists";
+   readonly _tag: "AlreadyExists" = "AlreadyExists"
+   readonly code: 6 = 6
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "AlreadyExists";
-   } 
-   get code(): 6 { return 6 }
+   }
 }
 class PermissionDenied extends GrpcError {
-   readonly _tag: "PermissionDenied";
+   readonly _tag: "PermissionDenied" = "PermissionDenied"
+   readonly code: 7 = 7
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "PermissionDenied";
-   } 
-   get code(): 7 { return 7 }
+   }
 }
 class ResourceExhausted extends GrpcError {
-   readonly _tag: "ResourceExhausted";
+   readonly _tag: "ResourceExhausted" = "ResourceExhausted"
+   readonly code: 8 = 8
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "ResourceExhausted";
-   } 
-   get code(): 8 { return 8 }
+   }
 }
 class FailedPrecondition extends GrpcError {
-   readonly _tag: "FailedPrecondition";
+   readonly _tag: "FailedPrecondition" = "FailedPrecondition"
+   readonly code: 9 = 9
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "FailedPrecondition";
-   } 
-   get code(): 9 { return 9 }
+   }
 }
 class Aborted extends GrpcError {
-   readonly _tag: "Aborted";
+   readonly _tag: "Aborted" = "Aborted"
+   readonly code: 10 = 10
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "Aborted";
-   } 
-   get code(): 10 { return 10 }
+   }
 }
 class OutOfRange extends GrpcError {
-   readonly _tag: "OutOfRange";
+   readonly _tag: "OutOfRange" = "OutOfRange"
+   readonly code: 11 = 11
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "OutOfRange";
-   } 
-   get code(): 11 { return 11 }
+   }
 }
 class Unimplemented extends GrpcError {
-   readonly _tag: "Unimplemented";
+   readonly _tag: "Unimplemented" = "Unimplemented"
+   readonly code: 12 = 12
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "Unimplemented";
-   } 
-   get code(): 12 { return 12 }
+   }
 }
 class Internal extends GrpcError {
-   readonly _tag: "Internal";
+   readonly _tag: "Internal" = "Internal"
+   readonly code: 13 = 13
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "Internal";
-   } 
-   get code(): 13 { return 13 }
+   }
 }
 class Unavailable extends GrpcError {
-   readonly _tag: "Unavailable";
+   readonly _tag: "Unavailable" = "Unavailable"
+   readonly code: 14 = 14
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "Unavailable";
-   } 
-   get code(): 14 { return 14 }
+   }
 }
 class DataLoss extends GrpcError {
-   readonly _tag: "DataLoss";
+   readonly _tag: "DataLoss" = "DataLoss"
+   readonly code: 15 = 15
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "DataLoss";
-   } 
-   get code(): 15 { return 15 }
+    } 
 }
 class Unauthenticated extends GrpcError {
-   readonly _tag: "Unauthenticated";
+   readonly _tag: "Unauthenticated" = "Unauthenticated"
+   readonly code: 16 = 16
    constructor(raw: Input){
        super(omitCode(raw));
-       this._tag = "Unauthenticated";
-   } 
-   get code(): 16 { return 16 }
+    } 
 }
 
 const RawErrorSchema = Schema.Struct({
