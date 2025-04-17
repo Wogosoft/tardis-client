@@ -1,5 +1,5 @@
 {
-  "version": "1.1.18",
+  "version": "1.1.19",
   "name": "@wogo/tardis-client",
   "license": "GPL-3.0-only",
   "exports": "./mod.ts",
