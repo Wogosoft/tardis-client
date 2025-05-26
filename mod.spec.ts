@@ -2,7 +2,7 @@ import { describe, it } from "jsr:@std/testing/bdd";
 import { expect } from "jsr:@std/expect";
 import { UserAuthenticator, wrapClient } from "./mod.ts";
 import type { CallOptions, Client } from "@connectrpc/connect";
-import type { UserAuthenticatorService } from "@tardis/authenticator/user_service_pb.ts"
+import { UserAuthenticatorService } from "@tardis/authenticator/user_service_pb.ts"
 import type { LoginRequest, LoginResponse, LogoutRequest, LogoutResponse, AuthToken, ValidateAuthRequest, ValidateAuthResponse } from "./gen/wogo/tardis/authenticator/v1/user_messages_pb.ts";
 import { Effect } from "@effect";
 
@@ -34,7 +34,7 @@ describe("Client proxy", () => {
     const MockClient: Client<typeof UserAuthenticatorService> = ClientStub;
 
     it("should forward to client and wrap in effect", async (t) => {
-        const proxy = wrapClient(MockClient);
+        const proxy = wrapClient(UserAuthenticatorService, MockClient);
         const keys = Object.keys(ClientStub) as (keyof typeof ClientStub)[];
 
         for(const key of keys){

@@ -1,5 +1,12 @@
-import { type Cause, type Context, Effect, Layer } from "@effect";
-import type { DescService, DescMethodUnary, MessageInitShape, MessageShape } from "@bufbuild/protobuf"
+import { type Cause, type Context, Effect, Layer, Stream } from "@effect";
+import type { 
+    DescService, 
+    DescMethodUnary, 
+    MessageInitShape, 
+    MessageShape, 
+    DescMethodServerStreaming, 
+    DescMessage,
+} from "@bufbuild/protobuf"
 import { 
     createClient, 
     type Transport, 
@@ -131,27 +138,56 @@ type ClientProxy<Desc extends DescService> = {
             MessageShape<O>,
             ClientError
         > 
-        : never;
+        :
+        Desc["method"][P] extends DescMethodServerStreaming<infer I, infer O>
+        ? (request: MessageInitShape<I>, options?: CallOptions) => Stream.Stream<
+            MessageShape<O>,
+            ClientError
+        >
+        : never
 };
 
-export const wrapClient = <T extends DescService>(client: Client<T>): ClientProxy<T> => {
+type UnaryFn<I extends DescMessage, O extends DescMessage> = (request: MessageInitShape<I>, options?: CallOptions) => Promise<MessageShape<O>>
+const wrapUnary = <I extends DescMessage, O extends DescMessage>(fn: UnaryFn<I,O>) => {
+    return (init: MessageInitShape<I>, options: CallOptions = {}) => {
+        return Effect.tryPromise({
+            try: (signal) => {
+                return fn(init, { ...options, signal })
+            },
+            catch: (error) => refineError(error)
+        })
+    }
+}
+
+type ServerStreamFn<I extends DescMessage, O extends DescMessage> = (request: MessageInitShape<I>, options?: CallOptions) => AsyncIterable<MessageShape<O>>
+const wrapServerStream = <I extends DescMessage, O extends DescMessage>(fn: ServerStreamFn<I,O>) => {
+    return (init: MessageInitShape<I>, options: CallOptions = {}) => {
+        return Stream.fromAsyncIterable(
+            fn(init, options),
+            (error) => refineError(error)
+        )
+    }
+}
+
+const isKeyOf = <T extends {}>(obj: T, key: PropertyKey): key is keyof T => {
+    return Object.hasOwn(obj, key)
+}
+
+export const wrapClient = <T extends DescService>(desc: T, client: Client<T>): ClientProxy<T> => {
     return new Proxy(client, {
-        get(target, p){
-            if( target[p as keyof Client<T>] !== undefined ){
-                // deno-lint-ignore no-explicit-any
-                type UnaryFn = (request: MessageInitShape<any>, options?: CallOptions) => Promise<MessageShape<any>>
-                // deno-lint-ignore no-explicit-any
-                return (init: MessageInitShape<any>, opts: CallOptions = {}) => Effect.tryPromise(
-                    { 
-                        try: (signal) => {
-                            return (target[p as keyof Client<T>] as UnaryFn)(init, { 
-                                signal,
-                                ...opts
-                            });
-                        },
-                        catch: (error) => refineError(error)
-                    }
-                )
+        get(target: Client<T>, p){
+            if( isKeyOf(target, p) ){
+                const def = desc.method[p];
+                switch(def.methodKind){
+                    case "unary":
+                        // deno-lint-ignore no-explicit-any
+                        return wrapUnary(target[p] as UnaryFn<any, any>)
+                    case "server_streaming":
+                        // deno-lint-ignore no-explicit-any
+                        return wrapServerStream(target[p] as ServerStreamFn<any,any>)
+                    default:
+                        return undefined;
+                }
             }
             return undefined;
         }
@@ -163,8 +199,8 @@ type ProxyEffect<T extends DescService, R = TransportLayer> = Effect.Effect<Clie
 const makeProxy = <
     R,
     const T extends DescService,
->(service: Effect.Effect<Client<T>, never, R>): ProxyEffect<T, R> => {
-    return service.pipe(Effect.map(wrapClient))
+>(def: T, service: Effect.Effect<Client<T>, never, R>): ProxyEffect<T, R> => {
+    return service.pipe(Effect.map(client => wrapClient(def, client)))
 }
 
 type ProxyLayer<T, R = TransportLayer> = Layer.Layer<T, never, R>;
@@ -197,7 +233,7 @@ const makePartialMockBuilder = <
     T extends DescService
 >(service: T) => (partial: Partial<ClientProxy<T>> = {}) : Effect.Effect<ClientProxy<T>, never, TransportLayer> => {
     return Effect.gen(function*(){
-        const client = yield* makeProxy(makeClient(service));
+        const client = yield* makeProxy(service, makeClient(service));
         return {
             ...client,
             ...partial
@@ -233,7 +269,7 @@ const makePartialBuilder = <
             return res
         }
 
-        const client = yield* makeProxy(makeClient(service));
+        const client = yield* makeProxy(service, makeClient(service));
         return {
             ...client,
             ...partial
@@ -284,7 +320,7 @@ export class UserAuthenticator extends UserAuthenticatorSuper {
     static Effect: ClientEffect<typeof UserAuthenticatorService> = 
         makeClient(UserAuthenticatorService);
     static Layer: ProxyLayer<UserAuthenticator> = 
-        Layer.effect(this, makeProxy(this.Effect));
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
     static Id = "wogo.tardis.authenticator.v1.UserAuthenticatorService" as const;
 }
 
@@ -319,7 +355,7 @@ export class UserManagement extends UserManagementSuper {
     static Effect: ClientEffect<typeof UserManagementService> = 
         makeClient(UserManagementService);
     static Layer: ProxyLayer<UserManagement> = 
-        Layer.effect(this, makeProxy(this.Effect));
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
     static Id = "wogo.tardis.authenticator.v1.UserManagementService" as const
 }
 
@@ -361,7 +397,7 @@ export class ParkingManagement extends ParkingManagementSuper {
     static Effect: ClientEffect<typeof ParkingManagementService> = 
         makeClient(ParkingManagementService);
     static Layer: ProxyLayer<ParkingManagement> = 
-        Layer.effect(this, makeProxy(this.Effect));
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
     static Id = "wogo.tardis.management.v1.ParkingManagementService" as const
 }
 
@@ -413,7 +449,7 @@ export class SubscriptionManagement extends SubscriptionManagementSuper {
     static Effect: ClientEffect<typeof SubscriptionManagementService> = 
         makeClient(SubscriptionManagementService);
     static Layer: ProxyLayer<SubscriptionManagement> = 
-        Layer.effect(this, makeProxy(this.Effect));
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
     static Id = "wogo.tardis.management.v1.SubscriptionManagementService" as const;
 }
 
@@ -452,7 +488,7 @@ export class Parking extends ParkingSuper {
     static Effect: ClientEffect<typeof ParkingService> = 
         makeClient(ParkingService);
     static Layer: ProxyLayer<Parking> = 
-        Layer.effect(this, makeProxy(this.Effect));
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
     static Id = "wogo.tardis.parking.v1.ParkingService" as const;
 }
 
@@ -468,7 +504,8 @@ export type ServiceId = typeof ServiceIds[number];
 
 export declare namespace HealthCheck {
     type Shape = {
-        check: (service: ServiceId) => Effect.Effect<HealthCheckResponse, Cause.UnknownException>;
+        check: (service: ServiceId) => Effect.Effect<HealthCheckResponse, ClientError>;
+        watch: (service: ServiceId) => Stream.Stream<HealthCheckResponse, ClientError>;
     }
 }
 
@@ -490,7 +527,16 @@ export class HealthCheck extends HealthSuper {
         Effect.gen(function*(){
             const client = yield* makeClient(Health);
             return HealthCheck.of({
-                check: (service) => Effect.tryPromise((signal) => client.check({ service }, { signal }))
+                check: (service) => Effect.tryPromise({
+                    try: (signal) => client.check({ service }, { signal }),
+                    catch: (error) => refineError(error) 
+                }),
+                watch: (service) => {
+                    return Stream.fromAsyncIterable(
+                        client.watch({ service }),
+                        error => refineError(error)
+                    )
+                }
             })
         })
     static Layer: Layer.Layer<HealthCheck, never, TransportLayer> = Layer.effect(this, this.Effect);
