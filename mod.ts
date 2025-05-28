@@ -1,4 +1,4 @@
-import { type Cause, type Context, Effect, Layer, Stream } from "@effect";
+import { type Cause, type Context, Effect, Layer, pipe, Record, Stream } from "@effect";
 import type { 
     DescService, 
     DescMethodUnary, 
@@ -281,17 +281,51 @@ const makePartialBuilder = <
     >
 }
 
-export declare namespace UserAuthenticator {
-    type AuthStatus = UserMessages.AuthStatus
+type DefaultLayer<T, R = TardisTransports> = Layer.Layer<T, never, R>;
+
+const makeDefault = <
+    T extends DescService,
+    Self extends {
+        ServiceDefinition: T,
+        Name: ServiceName
+    }
+>(
+    tag: Self
+): Layer.Layer<Self extends Context.Tag<infer Id, infer _> ? Id : never, never, TardisTransports> => {
+    const build = Effect.gen(function*(){
+        const transport = yield* TardisTransports.ask(tag.Name);
+        const client = createClient(tag.ServiceDefinition, transport);
+        return wrapClient(tag.ServiceDefinition, client) as Self extends Context.Tag<
+            infer _, 
+            infer Value
+        > ? Value : never;
+    })
+    return Layer.effect(tag as unknown as Context.Tag<
+        Self extends Context.Tag<infer Id, infer _> ? Id : never, 
+        Self extends Context.Tag<infer _, infer Value> ? Value : never
+    >, build);
 }
 
-export declare namespace UserAuthenticator.Messages {
-    type LoginRequest = UserMessages.LoginRequest;
-    type LoginResponse = UserMessages.LoginResponse;
-    type LogoutRequest = UserMessages.LogoutRequest;
-    type LogoutResponse = UserMessages.LogoutResponse;
-    type ValidateAuthRequest = UserMessages.ValidateAuthRequest;
-    type ValidateAuthResponse = UserMessages.ValidateAuthResponse;
+type Ask<Name extends ServiceName> = () => Effect.Effect<
+    TardisClients.Shape[Name],
+    never, 
+    TardisClients
+>
+const makeAsk = <Name extends ServiceName>(self: { readonly Name: Name }) => {
+    return () => TardisClients.ask(self.Name);
+}
+
+export declare namespace UserAuthenticator {
+    type AuthStatus = UserMessages.AuthStatus
+
+    namespace Messages {
+        type LoginRequest = UserMessages.LoginRequest;
+        type LoginResponse = UserMessages.LoginResponse;
+        type LogoutRequest = UserMessages.LogoutRequest;
+        type LogoutResponse = UserMessages.LogoutResponse;
+        type ValidateAuthRequest = UserMessages.ValidateAuthRequest;
+        type ValidateAuthResponse = UserMessages.ValidateAuthResponse;
+    }
 }
 
 const UserAuthenticatorSuper : EffectTagType<
@@ -308,7 +342,6 @@ export class UserAuthenticator extends UserAuthenticatorSuper {
     static get ServiceDefinition(): typeof UserAuthenticatorService {
         return UserAuthenticatorService
     }
-
     static Raw = (tx: Transport): Client<typeof UserAuthenticatorService> => 
         createClient(this.ServiceDefinition, tx);
     static Partial: PartialBuilder<typeof UserAuthenticatorService> =
@@ -321,6 +354,9 @@ export class UserAuthenticator extends UserAuthenticatorSuper {
         makeClient(UserAuthenticatorService);
     static Layer: ProxyLayer<UserAuthenticator> = 
         Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<UserAuthenticator> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "UserAuthenticator" as const
     static Id = "wogo.tardis.authenticator.v1.UserAuthenticatorService" as const;
 }
 
@@ -356,6 +392,9 @@ export class UserManagement extends UserManagementSuper {
         makeClient(UserManagementService);
     static Layer: ProxyLayer<UserManagement> = 
         Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<UserManagement> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "UserManagement" as const
     static Id = "wogo.tardis.authenticator.v1.UserManagementService" as const
 }
 
@@ -398,6 +437,9 @@ export class ParkingManagement extends ParkingManagementSuper {
         makeClient(ParkingManagementService);
     static Layer: ProxyLayer<ParkingManagement> = 
         Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<ParkingManagement> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "ParkingManagement" as const
     static Id = "wogo.tardis.management.v1.ParkingManagementService" as const
 }
 
@@ -450,6 +492,9 @@ export class SubscriptionManagement extends SubscriptionManagementSuper {
         makeClient(SubscriptionManagementService);
     static Layer: ProxyLayer<SubscriptionManagement> = 
         Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<SubscriptionManagement> = makeDefault(this)
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "SubscriptionManagement" as const
     static Id = "wogo.tardis.management.v1.SubscriptionManagementService" as const;
 }
 
@@ -489,18 +534,32 @@ export class Parking extends ParkingSuper {
         makeClient(ParkingService);
     static Layer: ProxyLayer<Parking> = 
         Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<Parking> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "Parking" as const
     static Id = "wogo.tardis.parking.v1.ParkingService" as const;
 }
 
-export const ServiceIds = [
-    Parking.Id,
-    ParkingManagement.Id,
-    SubscriptionManagement.Id,
-    UserAuthenticator.Id,
-    UserManagement.Id,
+
+export const ServiceNames = [
+    "Parking",
+    "ParkingManagement",
+    "SubscriptionManagement",
+    "UserAuthenticator",
+    "UserManagement",
 ] as const
 
-export type ServiceId = typeof ServiceIds[number];
+export type ServiceName = typeof ServiceNames[number];
+
+export const ServiceIds = {
+    Parking: Parking.Id,
+    ParkingManagement: ParkingManagement.Id,
+    SubscriptionManagement: SubscriptionManagement.Id,
+    UserAuthenticator: UserAuthenticator.Id,
+    UserManagement: UserManagement.Id,
+} as const
+
+export type ServiceId = typeof ServiceIds[keyof typeof ServiceIds];
 
 export declare namespace HealthCheck {
     type Shape = {
@@ -540,4 +599,178 @@ export class HealthCheck extends HealthSuper {
             })
         })
     static Layer: Layer.Layer<HealthCheck, never, TransportLayer> = Layer.effect(this, this.Effect);
+}
+
+export declare namespace TardisTransports {
+    type GrpcTransport = ({
+        kind: "grpc"
+    } & GrpcTransportOptions)
+
+    type ConnectTransport = ({
+        kind: "connect"
+    } & ConnectTransportOptions)
+
+    type TransportOptions = GrpcTransport | ConnectTransport;
+
+    type TransportConfig = {
+        Parking: TransportOptions,
+        ParkingManagement: TransportOptions,
+        SubscriptionManagement: TransportOptions,
+        UserAuthenticator: TransportOptions,
+        UserManagement: TransportOptions,
+    }
+
+    type Shape = {
+        Parking: Transport,
+        ParkingManagement: Transport,
+        SubscriptionManagement: Transport,
+        UserAuthenticator: Transport,
+        UserManagement: Transport,
+    }
+}
+
+const TardisTransportsSuper: EffectTagType<
+    TardisTransports,
+    "@clients/TardisTransports",
+    TardisTransports.Shape
+> = Effect.Tag("@clients/TardisTransports")<
+    TardisTransports,
+    TardisTransports.Shape
+>();
+
+type TardisTransportAsk = <Name extends ServiceName>(name: Name) => Effect.Effect<TardisTransports.Shape[Name], never, TardisTransports>
+export class TardisTransports extends TardisTransportsSuper {
+    static ask: TardisTransportAsk = Effect.fnUntraced(function*<Name extends ServiceName>(name: Name){
+        const transports = yield* TardisTransports;
+        return transports[name]
+    })
+
+    static Layer = (hosts: TardisTransports.TransportConfig): Layer.Layer<TardisTransports> => {
+        const makeTransport = (options: TardisTransports.TransportOptions) => {
+            switch(options.kind){
+                case "connect": 
+                    return createConnectTransport(options);
+                case "grpc": 
+                    return createGrpcTransport(options);
+            }
+        }
+
+        const transports = pipe(
+            hosts,
+            Record.map(host => makeTransport(host))
+        )
+
+        return Layer.succeed(this, transports);
+    }
+}
+
+export declare namespace Heartbeat {
+    type Shape = {
+        checkParking: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
+        checkParkingManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
+        checkSubscriptionManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
+        checkUserAuthenticator: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
+        checkUserManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
+        watchParking: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
+        watchParkingManagement: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
+        watchSubscriptionManagement: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
+        watchUserAuthenticator: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
+        watchUserManagement: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
+    }
+}
+
+const HeartbeatSuper: EffectTagType<
+    Heartbeat,
+    "@clients/Heartbeat",
+    Heartbeat.Shape
+> = Effect.Tag("@clients/Heartbeat")<
+    Heartbeat,
+    Heartbeat.Shape
+>();
+
+export class Heartbeat extends HeartbeatSuper {
+    static Layer: Layer.Layer<
+        Heartbeat, 
+        never, 
+        TardisTransports
+    > = Layer.effect(this, Effect.gen(function*(){
+        const transports = yield* TardisTransports;
+
+        const clients = pipe(
+            transports,
+            Record.map(tx => createClient(Health, tx))
+        )
+
+        return ServiceNames.reduce((acc, next) => {
+            const service = ServiceIds[next];
+            const checkKey = `check${next}` as const
+            const watchKey = `watch${next}` as const
+            return {
+                ...acc,
+                [checkKey]: (options?: CallOptions) => 
+                    Effect.tryPromise({
+                        try: (signal) => clients[next].check(
+                            { service }, 
+                            { ...options, signal }
+                        ),
+                        catch: error => refineError(error)
+                    }),
+                [watchKey]: (options?: CallOptions) => 
+                    Stream.fromAsyncIterable(
+                        clients[next].watch({ service }, { ...options }),
+                        error => refineError(error)
+                    )
+            }
+        }, {} as Heartbeat.Shape)
+    }))
+}
+
+export declare namespace TardisClients {
+    type Shape = {
+        Parking: ClientProxy<typeof Parking.ServiceDefinition>,
+        ParkingManagement: ClientProxy<typeof ParkingManagement.ServiceDefinition>,
+        SubscriptionManagement: ClientProxy<typeof SubscriptionManagement.ServiceDefinition>,
+        UserAuthenticator: ClientProxy<typeof UserAuthenticator.ServiceDefinition>,
+        UserManagement: ClientProxy<typeof UserManagement.ServiceDefinition>,
+    }
+}
+
+const TardisClientsSuper: EffectTagType<
+    TardisClients,
+    "@clients/TardisClients",
+    TardisClients.Shape
+> = Effect.Tag("@clients/TardisClients")<
+    TardisClients,
+    TardisClients.Shape
+>();
+
+type TardisClientAsk = <Name extends ServiceName>(name: Name) => Effect.Effect<TardisClients.Shape[Name], never, TardisClients>
+export class TardisClients extends TardisClientsSuper {
+    static ask: TardisClientAsk = Effect.fnUntraced(function*<Name extends ServiceName>(name: Name){
+        const clients = yield* TardisClients;
+        return clients[name]
+    })
+
+    static Layer: Layer.Layer<
+        TardisClients, 
+        never, 
+        TardisTransports
+    > = Layer.effect(this, Effect.gen(function*(){
+        const transports = yield* TardisTransports;
+
+        const services = {
+            Parking: Parking.ServiceDefinition,
+            ParkingManagement: ParkingManagement.ServiceDefinition,
+            SubscriptionManagement: SubscriptionManagement.ServiceDefinition,
+            UserAuthenticator: UserAuthenticator.ServiceDefinition,
+            UserManagement: UserManagement.ServiceDefinition,
+        } as const;
+
+        const clients = pipe(
+            services,
+            Record.map((service, name) => wrapClient(service, createClient(service, transports[name])))
+        ) as { [P in ServiceName]: ClientProxy<typeof services[P]>}
+
+        return clients
+    }))
 }
