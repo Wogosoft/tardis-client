@@ -31,7 +31,6 @@ import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
 import { Health, type HealthCheckResponse } from "@tardis/health/health_pb.ts";
 import type { CommonTransportOptions } from "@connectrpc/connect/protocol";
 import { type ClientError, refineError } from "./errors.ts";
-import type { NoSuchElementException } from "@effect/Cause";
 export * as Common from "@tardis/common/common_messages_pb.ts";
 export { ParkingManagementMessages };
 
@@ -282,7 +281,9 @@ const makePartialBuilder = <
     >
 }
 
-type DefaultLayer<T, R = TardisTransports> = Layer.Layer<T, NoSuchElementException, R>;
+export class MissingTransport extends Data.Error<{ name: string }>{}
+
+type DefaultLayer<T, R = TardisTransports> = Layer.Layer<T, MissingTransport, R>;
 
 const makeDefault = <
     T extends DescService,
@@ -292,7 +293,7 @@ const makeDefault = <
     }
 >(
     tag: Self
-): Layer.Layer<Self extends Context.Tag<infer Id, infer _> ? Id : never, NoSuchElementException, TardisTransports> => {
+): Layer.Layer<Self extends Context.Tag<infer Id, infer _> ? Id : never, MissingTransport, TardisTransports> => {
     const build = Effect.gen(function*(){
         const transport = yield* TardisTransports.ask(tag.Name);
         const client = createClient(tag.ServiceDefinition, transport);
@@ -653,13 +654,15 @@ const TardisTransportsSuper: EffectTagType<
     TardisTransports.Shape
 >();
 
-type TardisTransportAsk = <Name extends ServiceName>(name: Name) => Effect.Effect<Transport, NoSuchElementException, TardisTransports>
+type TardisTransportAsk = <Name extends ServiceName>(name: Name) => Effect.Effect<Transport, MissingTransport, TardisTransports>
 export class TardisTransports extends TardisTransportsSuper {
     static ask: TardisTransportAsk = Effect.fnUntraced(function*<Name extends ServiceName>(name: Name){
-        const transports = yield* TardisTransports;
-        const tx = yield* transports[name]
-        return tx
-    })
+            const transports = yield* TardisTransports;
+            const tx = yield* transports[name]
+            return tx
+        },
+        (_, name) => Effect.catchTag(_, "NoSuchElementException", () => new MissingTransport({ name }))
+    )
 
     static Layer = (hosts: TardisTransports.TransportConfig): Layer.Layer<TardisTransports> => {
         const makeTransport = (options: TardisTransports.TransportOptions) => {
