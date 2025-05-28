@@ -1,6 +1,6 @@
 {
   "name": "tardis-client",
-  "version": "2.0.0-alpha",
+  "version": "2.0.0-alpha.1",
   "private": true,
   "author": "Jkierem <juanmiguelgomez8@gmail.com>",
   "scripts": {

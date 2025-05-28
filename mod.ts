@@ -1,4 +1,4 @@
-import { type Cause, type Context, Effect, Layer, pipe, Record, Stream } from "@effect";
+import { type Cause, type Context, Data, Effect, Layer, Option, pipe, Record, Stream } from "@effect";
 import type { 
     DescService, 
     DescMethodUnary, 
@@ -31,6 +31,7 @@ import type * as ParkingMessages from "@tardis/parking/parking_messages_pb.ts";
 import { Health, type HealthCheckResponse } from "@tardis/health/health_pb.ts";
 import type { CommonTransportOptions } from "@connectrpc/connect/protocol";
 import { type ClientError, refineError } from "./errors.ts";
+import type { NoSuchElementException } from "@effect/Cause";
 export * as Common from "@tardis/common/common_messages_pb.ts";
 export { ParkingManagementMessages };
 
@@ -281,7 +282,7 @@ const makePartialBuilder = <
     >
 }
 
-type DefaultLayer<T, R = TardisTransports> = Layer.Layer<T, never, R>;
+type DefaultLayer<T, R = TardisTransports> = Layer.Layer<T, NoSuchElementException, R>;
 
 const makeDefault = <
     T extends DescService,
@@ -291,7 +292,7 @@ const makeDefault = <
     }
 >(
     tag: Self
-): Layer.Layer<Self extends Context.Tag<infer Id, infer _> ? Id : never, never, TardisTransports> => {
+): Layer.Layer<Self extends Context.Tag<infer Id, infer _> ? Id : never, NoSuchElementException, TardisTransports> => {
     const build = Effect.gen(function*(){
         const transport = yield* TardisTransports.ask(tag.Name);
         const client = createClient(tag.ServiceDefinition, transport);
@@ -307,12 +308,12 @@ const makeDefault = <
 }
 
 type Ask<Name extends ServiceName> = () => Effect.Effect<
-    TardisClients.Shape[Name],
+    Option.Option.Value<TardisClients.Shape[Name]>,
     never, 
     TardisClients
 >
 const makeAsk = <Name extends ServiceName>(self: { readonly Name: Name }) => {
-    return () => TardisClients.ask(self.Name);
+    return () => TardisClients.ask(self.Name)
 }
 
 export declare namespace UserAuthenticator {
@@ -610,7 +611,21 @@ export declare namespace TardisTransports {
         kind: "connect"
     } & ConnectTransportOptions)
 
-    type TransportOptions = GrpcTransport | ConnectTransport;
+    type RouterTransport = ({
+        kind: "router"
+    } & { 
+        routes: (router: ConnectRouter) => void, 
+        options?: {
+            transport?: Partial<CommonTransportOptions>;
+            router?: ConnectRouterOptions;
+        }
+    })
+
+    type EmptyTransport = {
+        kind: "empty"
+    }
+
+    type TransportOptions = GrpcTransport | ConnectTransport | RouterTransport | EmptyTransport;
 
     type TransportConfig = {
         Parking: TransportOptions,
@@ -621,11 +636,11 @@ export declare namespace TardisTransports {
     }
 
     type Shape = {
-        Parking: Transport,
-        ParkingManagement: Transport,
-        SubscriptionManagement: Transport,
-        UserAuthenticator: Transport,
-        UserManagement: Transport,
+        Parking: Option.Option<Transport>,
+        ParkingManagement: Option.Option<Transport>,
+        SubscriptionManagement: Option.Option<Transport>,
+        UserAuthenticator: Option.Option<Transport>,
+        UserManagement: Option.Option<Transport>,
     }
 }
 
@@ -638,20 +653,25 @@ const TardisTransportsSuper: EffectTagType<
     TardisTransports.Shape
 >();
 
-type TardisTransportAsk = <Name extends ServiceName>(name: Name) => Effect.Effect<TardisTransports.Shape[Name], never, TardisTransports>
+type TardisTransportAsk = <Name extends ServiceName>(name: Name) => Effect.Effect<Transport, NoSuchElementException, TardisTransports>
 export class TardisTransports extends TardisTransportsSuper {
     static ask: TardisTransportAsk = Effect.fnUntraced(function*<Name extends ServiceName>(name: Name){
         const transports = yield* TardisTransports;
-        return transports[name]
+        const tx = yield* transports[name]
+        return tx
     })
 
     static Layer = (hosts: TardisTransports.TransportConfig): Layer.Layer<TardisTransports> => {
         const makeTransport = (options: TardisTransports.TransportOptions) => {
             switch(options.kind){
                 case "connect": 
-                    return createConnectTransport(options);
+                    return Option.some(createConnectTransport(options));
                 case "grpc": 
-                    return createGrpcTransport(options);
+                    return Option.some(createGrpcTransport(options));
+                case "router":
+                    return Option.some(createRouterTransport(options.routes, options.options));
+                case "empty":
+                    return Option.none();
             }
         }
 
@@ -662,20 +682,37 @@ export class TardisTransports extends TardisTransportsSuper {
 
         return Layer.succeed(this, transports);
     }
+
+    static Partial = (hosts: Partial<TardisTransports.TransportConfig>): Layer.Layer<TardisTransports> => {
+        return this.Layer({
+            Parking: { kind: "empty" },
+            ParkingManagement: { kind: "empty" },
+            SubscriptionManagement: { kind: "empty" },
+            UserAuthenticator: { kind: "empty" },
+            UserManagement: { kind: "empty" },
+            ...hosts,
+        })
+    }
+}
+
+export class MissingClient extends Data.Error<{ name: string }> {
+    static fromNoSuchElement = (name: string) => (): MissingClient => {
+        return new MissingClient({ name });
+    }
 }
 
 export declare namespace Heartbeat {
     type Shape = {
-        checkParking: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
-        checkParkingManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
-        checkSubscriptionManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
-        checkUserAuthenticator: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
-        checkUserManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError>;
-        watchParking: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
-        watchParkingManagement: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
-        watchSubscriptionManagement: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
-        watchUserAuthenticator: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
-        watchUserManagement: (options?: CallOptions) => Stream.Stream<HealthCheckResponse, ClientError>;
+        checkParking: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
+        checkParkingManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
+        checkSubscriptionManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
+        checkUserAuthenticator: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
+        checkUserManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
+        watchParking: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchParkingManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchSubscriptionManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchUserAuthenticator: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchUserManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
     }
 }
 
@@ -698,7 +735,14 @@ export class Heartbeat extends HeartbeatSuper {
 
         const clients = pipe(
             transports,
-            Record.map(tx => createClient(Health, tx))
+            Record.map(tx => {
+                return pipe(
+                    tx,
+                    Option.map(tx => {
+                        return createClient(Health, tx)
+                    })
+                )
+            })
         )
 
         return ServiceNames.reduce((acc, next) => {
@@ -707,19 +751,28 @@ export class Heartbeat extends HeartbeatSuper {
             const watchKey = `watch${next}` as const
             return {
                 ...acc,
-                [checkKey]: (options?: CallOptions) => 
-                    Effect.tryPromise({
-                        try: (signal) => clients[next].check(
-                            { service }, 
-                            { ...options, signal }
-                        ),
-                        catch: error => refineError(error)
-                    }),
-                [watchKey]: (options?: CallOptions) => 
-                    Stream.fromAsyncIterable(
-                        clients[next].watch({ service }, { ...options }),
-                        error => refineError(error)
-                    )
+                [checkKey]: Effect.fn(`Healthcheck on ${next}`)(
+                    function*(options?: CallOptions){
+                        const client = yield* clients[next];
+                        return yield* Effect.tryPromise({
+                            try: (signal) => client.check(
+                                { service }, 
+                                { ...options, signal }
+                            ),
+                            catch: error => refineError(error)
+                        })
+                    },
+                    Effect.catchTag("NoSuchElementException", MissingClient.fromNoSuchElement(next))
+                ),
+                [watchKey]: Effect.fn(`Building Watch on ${next}`)(function*(options?: CallOptions){
+                        const client = yield* clients[next];
+                        return Stream.fromAsyncIterable(
+                            client.watch({ service }, { ...options }),
+                            error => refineError(error)
+                        )
+                    },
+                    Effect.catchTag("NoSuchElementException", MissingClient.fromNoSuchElement(next))
+                ),
             }
         }, {} as Heartbeat.Shape)
     }))
@@ -727,11 +780,11 @@ export class Heartbeat extends HeartbeatSuper {
 
 export declare namespace TardisClients {
     type Shape = {
-        Parking: ClientProxy<typeof Parking.ServiceDefinition>,
-        ParkingManagement: ClientProxy<typeof ParkingManagement.ServiceDefinition>,
-        SubscriptionManagement: ClientProxy<typeof SubscriptionManagement.ServiceDefinition>,
-        UserAuthenticator: ClientProxy<typeof UserAuthenticator.ServiceDefinition>,
-        UserManagement: ClientProxy<typeof UserManagement.ServiceDefinition>,
+        Parking: Option.Option<ClientProxy<typeof Parking.ServiceDefinition>>,
+        ParkingManagement: Option.Option<ClientProxy<typeof ParkingManagement.ServiceDefinition>>,
+        SubscriptionManagement: Option.Option<ClientProxy<typeof SubscriptionManagement.ServiceDefinition>>,
+        UserAuthenticator: Option.Option<ClientProxy<typeof UserAuthenticator.ServiceDefinition>>,
+        UserManagement: Option.Option<ClientProxy<typeof UserManagement.ServiceDefinition>>,
     }
 }
 
@@ -744,12 +797,19 @@ const TardisClientsSuper: EffectTagType<
     TardisClients.Shape
 >();
 
-type TardisClientAsk = <Name extends ServiceName>(name: Name) => Effect.Effect<TardisClients.Shape[Name], never, TardisClients>
+type TardisClientAsk = <Name extends ServiceName>(name: Name) => Effect.Effect<
+    Option.Option.Value<TardisClients.Shape[Name]>, 
+    never, 
+    TardisClients
+>
 export class TardisClients extends TardisClientsSuper {
     static ask: TardisClientAsk = Effect.fnUntraced(function*<Name extends ServiceName>(name: Name){
         const clients = yield* TardisClients;
-        return clients[name]
-    })
+        const maybeClient = yield* clients[name];
+        return maybeClient as Option.Option.Value<TardisClients.Shape[Name]>
+    },
+        (_, name) => Effect.orDieWith(_, () => new Error(`Missing transport for ${name}`))
+    )
 
     static Layer: Layer.Layer<
         TardisClients, 
@@ -768,8 +828,15 @@ export class TardisClients extends TardisClientsSuper {
 
         const clients = pipe(
             services,
-            Record.map((service, name) => wrapClient(service, createClient(service, transports[name])))
-        ) as { [P in ServiceName]: ClientProxy<typeof services[P]>}
+            Record.map((service, name) => {
+                return pipe(
+                    transports[name],
+                    Option.map(tx => {
+                        return wrapClient(service, createClient(service, tx))
+                    })
+                )
+            })
+        ) as { [P in ServiceName]: Option.Option<ClientProxy<typeof services[P]>> }
 
         return clients
     }))
