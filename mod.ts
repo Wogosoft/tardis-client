@@ -706,11 +706,11 @@ export class MissingClient extends Data.Error<{ name: string }> {
 
 export declare namespace Heartbeat {
     type Shape = {
-        checkParking: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
-        checkParkingManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
-        checkSubscriptionManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
-        checkUserAuthenticator: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
-        checkUserManagement: (options?: CallOptions) => Effect.Effect<HealthCheckResponse, ClientError | MissingClient>;
+        checkParking: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkParkingManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkSubscriptionManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkUserAuthenticator: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkUserManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         watchParking: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchParkingManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchSubscriptionManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
@@ -757,15 +757,18 @@ export class Heartbeat extends HeartbeatSuper {
                 [checkKey]: Effect.fn(`Healthcheck on ${next}`)(
                     function*(options?: CallOptions){
                         const client = yield* clients[next];
-                        return yield* Effect.tryPromise({
+                        const result = yield* Effect.tryPromise({
                             try: (signal) => client.check(
                                 { service }, 
                                 { ...options, signal }
                             ),
                             catch: error => refineError(error)
-                        })
+                        }).pipe(
+                            Effect.catchAll(() => Effect.succeed({ status: 0 } as HealthCheckResponse))
+                        )
+                        return result.status === 1;
                     },
-                    Effect.catchTag("NoSuchElementException", MissingClient.fromNoSuchElement(next))
+                    Effect.catchTag("NoSuchElementException", MissingClient.fromNoSuchElement(next)),
                 ),
                 [watchKey]: Effect.fn(`Building Watch on ${next}`)(function*(options?: CallOptions){
                         const client = yield* clients[next];

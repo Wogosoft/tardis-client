@@ -1,10 +1,14 @@
 {
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0",
   "name": "@wogo/tardis-client",
   "license": "GPL-3.0-only",
-  "exports": "./mod.ts",
+  "exports": {
+    ".": "./mod.ts",
+    "./errors": "./errors.ts"
+  },
   "tasks": {
-    "test": "deno test mod.spec.ts"
+    "test": "deno test mod.spec.ts",
+    "sandbox": "deno run -A ./sandbox.ts"
   },
   "publish": {
     "include": ["./gen/wogo/tardis", "./gen/grpc/health", "./mod.ts", "./errors.ts"]
