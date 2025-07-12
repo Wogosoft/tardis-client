@@ -1,163 +1,68 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@std/assert@^1.0.10": "1.0.11",
-    "jsr:@std/assert@^1.0.11": "1.0.11",
-    "jsr:@std/expect@*": "1.0.12",
-    "jsr:@std/internal@^1.0.5": "1.0.5",
-    "jsr:@std/testing@*": "1.0.9",
-    "npm:@bufbuild/buf@1.50.0": "1.50.0",
-    "npm:@bufbuild/protobuf@^2.4.0": "2.4.0",
-    "npm:@bufbuild/protoc-gen-es@^2.4.0": "2.4.0_@bufbuild+protobuf@2.4.0",
-    "npm:@connectrpc/connect-node@2.0.2": "2.0.2_@bufbuild+protobuf@2.4.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.4.0",
-    "npm:@connectrpc/connect-node@^2.0.2": "2.0.2_@bufbuild+protobuf@2.4.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.4.0",
-    "npm:@connectrpc/connect@2.0.2": "2.0.2_@bufbuild+protobuf@2.4.0",
-    "npm:@connectrpc/connect@^2.0.2": "2.0.2_@bufbuild+protobuf@2.4.0",
-    "npm:@connectrpc/protoc-gen-connect-es@^1.6.1": "1.6.1_@bufbuild+protoc-gen-es@2.4.0__@bufbuild+protobuf@2.4.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.4.0_@bufbuild+protobuf@2.4.0",
-    "npm:@types/node@*": "22.5.4",
-    "npm:effect@3.10.16": "3.10.16",
-    "npm:effect@3.12.9": "3.12.9",
-    "npm:effect@3.15.0": "3.15.0"
-  },
-  "jsr": {
-    "@std/assert@1.0.11": {
-      "integrity": "2461ef3c368fe88bc60e186e7744a93112f16fd110022e113a0849e94d1c83c1",
-      "dependencies": [
-        "jsr:@std/internal"
-      ]
-    },
-    "@std/expect@1.0.12": {
-      "integrity": "417509358ca7c10632c2a30273c952e447020767706d8c5e11f9793e00ec9d55",
-      "dependencies": [
-        "jsr:@std/assert@^1.0.11",
-        "jsr:@std/internal"
-      ]
-    },
-    "@std/internal@1.0.5": {
-      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
-    },
-    "@std/testing@1.0.9": {
-      "integrity": "9bdd4ac07cb13e7594ac30e90f6ceef7254ac83a9aeaa089be0008f33aab5cd4",
-      "dependencies": [
-        "jsr:@std/assert@^1.0.10",
-        "jsr:@std/internal"
-      ]
-    }
+    "npm:@bufbuild/protobuf@^2.6.0": "2.6.0",
+    "npm:@bufbuild/protoc-gen-es@^2.6.0": "2.6.0_@bufbuild+protobuf@2.6.0",
+    "npm:@connectrpc/connect-node@2.0.2": "2.0.2_@bufbuild+protobuf@2.6.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.6.0",
+    "npm:@connectrpc/connect-node@^2.0.2": "2.0.2_@bufbuild+protobuf@2.6.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.6.0",
+    "npm:@connectrpc/connect@2.0.2": "2.0.2_@bufbuild+protobuf@2.6.0",
+    "npm:@connectrpc/connect@^2.0.2": "2.0.2_@bufbuild+protobuf@2.6.0",
+    "npm:@connectrpc/protoc-gen-connect-es@^1.6.1": "1.6.1_@bufbuild+protoc-gen-es@2.6.0__@bufbuild+protobuf@2.6.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.6.0_@bufbuild+protobuf@2.6.0",
+    "npm:effect@3.16.12": "3.16.12"
   },
   "npm": {
-    "@bufbuild/buf-darwin-arm64@1.50.0": {
-      "integrity": "sha512-ldj1s0hMhZlz0N4+fqs9jGqC7jKAcsfLNp8kM+G+6XTPh8GWA/U1sYRdHhAlv1+3STfWhGxAhrNGRRVvvimALQ==",
-      "os": ["darwin"],
-      "cpu": ["arm64"]
+    "@bufbuild/protobuf@1.10.1": {
+      "integrity": "sha512-wJ8ReQbHxsAfXhrf9ixl0aYbZorRuOWpBNzm8pL8ftmSxQx/wnJD5Eg861NwJU/czy2VXFIebCeZnZrI9rktIQ=="
     },
-    "@bufbuild/buf-darwin-x64@1.50.0": {
-      "integrity": "sha512-0ODFAnDVr0UOIUHGrI3vA3Cycec186BP5PFOuW6bALxBVN52Lqjjj+/+bVhvbBQlYo3rkxOtxEdoWGHZJrHhHA==",
-      "os": ["darwin"],
-      "cpu": ["x64"]
+    "@bufbuild/protobuf@2.6.0": {
+      "integrity": "sha512-6cuonJVNOIL7lTj5zgo/Rc2bKAo4/GvN+rKCrUj7GdEHRzCk8zKOfFwUsL9nAVk5rSIsRmlgcpLzTRysopEeeg=="
     },
-    "@bufbuild/buf-linux-aarch64@1.50.0": {
-      "integrity": "sha512-Dp0YzLOW7O+C8bAm6/Q2HSrTYpDs2SxQXx+dBNxUotMpzx+uaUvqXb3EGr7s07ro+FsT0sFjzKTBcuCwkj+guQ==",
-      "os": ["linux"],
-      "cpu": ["arm64"]
-    },
-    "@bufbuild/buf-linux-armv7@1.50.0": {
-      "integrity": "sha512-EMYRKSJ4kZo+OiHvMTYM+O27lf/okaf+bk1agRUTmBccp+qoGEC0R3DB/powFf/FURkUF7vKUS4T0GC/4n8OVA==",
-      "os": ["linux"],
-      "cpu": ["arm"]
-    },
-    "@bufbuild/buf-linux-x64@1.50.0": {
-      "integrity": "sha512-1G6ZQLXYoCXl8ZmCivUuknc6BiMz2bMtfpzYurFhj9wCIQTZsgepTBoiXHTcEdu2fjYAFxRGo4o+ZALU1umY0g==",
-      "os": ["linux"],
-      "cpu": ["x64"]
-    },
-    "@bufbuild/buf-win32-arm64@1.50.0": {
-      "integrity": "sha512-KpbI+f0TnGaa4KlPQXCLx8ZWKfO2pMD1kvVjAaktmm9OUoP9HrvZJ11tDEiFEFbrKbapCIhCCC3XWaldEDJWcA==",
-      "os": ["win32"],
-      "cpu": ["arm64"]
-    },
-    "@bufbuild/buf-win32-x64@1.50.0": {
-      "integrity": "sha512-gA9aVuZYfh3pmWNYxmnK6thlcqyu2ht8haFhdB0w14Rtj200FAsMmzF7CPWvXQrV5g0pqXPwoMjZigT4OJHOXg==",
-      "os": ["win32"],
-      "cpu": ["x64"]
-    },
-    "@bufbuild/buf@1.50.0": {
-      "integrity": "sha512-XcdB5/Ls8k1eVcgNwUsRZEhCqiHgsnN+uEk/aDh0urGeiWc/dN6c89ZnAnI9/v0AZWzp6/rowoZhThlTl+D0bw==",
-      "optionalDependencies": [
-        "@bufbuild/buf-darwin-arm64",
-        "@bufbuild/buf-darwin-x64",
-        "@bufbuild/buf-linux-aarch64",
-        "@bufbuild/buf-linux-armv7",
-        "@bufbuild/buf-linux-x64",
-        "@bufbuild/buf-win32-arm64",
-        "@bufbuild/buf-win32-x64"
-      ],
-      "scripts": true,
-      "bin": true
-    },
-    "@bufbuild/protobuf@1.10.0": {
-      "integrity": "sha512-QDdVFLoN93Zjg36NoQPZfsVH9tZew7wKDKyV5qRdj8ntT4wQCOradQjRaTdwMhWUYsgKsvCINKKm87FdEk96Ag=="
-    },
-    "@bufbuild/protobuf@2.4.0": {
-      "integrity": "sha512-RN9M76x7N11QRihKovEglEjjVCQEA9PRBVnDgk9xw8JHLrcUrp4FpAVSPSH91cNbcTft3u2vpLN4GMbiKY9PJw=="
-    },
-    "@bufbuild/protoc-gen-es@2.4.0_@bufbuild+protobuf@2.4.0": {
-      "integrity": "sha512-f5nm7HxXwVJKcAqpUTevKeLJOjy9WWqAuYORx3AnlB7w+XHPo/qrjQgMh4a9Dy1/aixYvBw2CnNK5d0DZ6CRgw==",
+    "@bufbuild/protoc-gen-es@2.6.0_@bufbuild+protobuf@2.6.0": {
+      "integrity": "sha512-sKvgGndyw1stawiDKMLZyilj1BzMuUTlvyrBiDnzxGIjCMK4hoE0DsVBiqCuTFqENnLmEGdy+huOZ5KgQAGlFA==",
       "dependencies": [
-        "@bufbuild/protobuf@2.4.0",
-        "@bufbuild/protoplugin@2.4.0_typescript@5.4.5"
+        "@bufbuild/protobuf@2.6.0",
+        "@bufbuild/protoplugin@2.6.0_typescript@5.4.5"
       ],
       "optionalPeers": [
-        "@bufbuild/protobuf@2.4.0"
+        "@bufbuild/protobuf@2.6.0"
       ],
       "bin": true
     },
-    "@bufbuild/protoplugin@1.10.0_typescript@4.5.2": {
-      "integrity": "sha512-u6NE4vL0lw1+EK4/PiE/SQB7fKO4LRJNTEScIXVOi2x88K/c8WKc/k0KyEaA0asVBMpwekJQZGnRyj04ZtN5Gg==",
+    "@bufbuild/protoplugin@1.10.1_typescript@4.5.2": {
+      "integrity": "sha512-LaSbfwabAFIvbVnbn8jWwElRoffCIxhVraO8arliVwWupWezHLXgqPHEYLXZY/SsAR+/YsFBQJa8tAGtNPJyaQ==",
       "dependencies": [
-        "@bufbuild/protobuf@1.10.0",
-        "@typescript/vfs@1.6.0_typescript@4.5.2",
+        "@bufbuild/protobuf@1.10.1",
+        "@typescript/vfs@1.6.1_typescript@4.5.2",
         "typescript@4.5.2"
       ]
     },
-    "@bufbuild/protoplugin@2.4.0_typescript@5.4.5": {
-      "integrity": "sha512-Y7Wxis00uKM58UOM21aVECsMoPHzKvHJBH05bpmAhlOWXhVjtFDStOwB2gIiUB1rumbwOmjHTDe/bGP5M4HxmA==",
+    "@bufbuild/protoplugin@2.6.0_typescript@5.4.5": {
+      "integrity": "sha512-mfAwI+4GqUtbw/ddfyolEHaAL86ozRIVlOg2A+SVRbjx1CjsMc1YJO+hBSkt/pqfpR+PmWBbZLstHbXP8KGtMQ==",
       "dependencies": [
-        "@bufbuild/protobuf@2.4.0",
-        "@typescript/vfs@1.6.0_typescript@5.4.5",
+        "@bufbuild/protobuf@2.6.0",
+        "@typescript/vfs@1.6.1_typescript@5.4.5",
         "typescript@5.4.5"
       ]
     },
-    "@connectrpc/connect-node@2.0.2_@bufbuild+protobuf@2.4.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.4.0": {
+    "@connectrpc/connect-node@2.0.2_@bufbuild+protobuf@2.6.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.6.0": {
       "integrity": "sha512-33Ut3SRkb6SugpwVCtXXRvUrOdtiyG6z6d5+eijBOLOI75sw1tDCwcs0o/9WL3rUj1M08dLUrPmJB47fjpv6EA==",
       "dependencies": [
-        "@bufbuild/protobuf@2.4.0",
+        "@bufbuild/protobuf@2.6.0",
         "@connectrpc/connect"
       ]
     },
-    "@connectrpc/connect@2.0.2_@bufbuild+protobuf@2.4.0": {
+    "@connectrpc/connect@2.0.2_@bufbuild+protobuf@2.6.0": {
       "integrity": "sha512-xZuylIUNvNlH52e/4eQsZvY4QZyDJRtEFEDnn/yBrv5Xi5ZZI/p8X+GAHH35ucVaBvv9u7OzHZo8+tEh1EFTxA==",
       "dependencies": [
-        "@bufbuild/protobuf@2.4.0"
+        "@bufbuild/protobuf@2.6.0"
       ]
     },
-    "@connectrpc/protoc-gen-connect-es@1.6.1": {
+    "@connectrpc/protoc-gen-connect-es@1.6.1_@bufbuild+protoc-gen-es@2.6.0__@bufbuild+protobuf@2.6.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.6.0_@bufbuild+protobuf@2.6.0": {
       "integrity": "sha512-0fHcaADd+GKM0I/koIQpmKg7b+QL18bXlggTUYEAlMFzsd4zN/ApG3235hdUcRyhrAOAItTXxh8ZAV/nNd43Gg==",
       "dependencies": [
-        "@bufbuild/protobuf@1.10.0",
-        "@bufbuild/protoplugin@1.10.0_typescript@4.5.2"
-      ],
-      "optionalPeers": [
+        "@bufbuild/protobuf@1.10.1",
         "@bufbuild/protoc-gen-es",
-        "@connectrpc/connect"
-      ],
-      "bin": true
-    },
-    "@connectrpc/protoc-gen-connect-es@1.6.1_@bufbuild+protoc-gen-es@2.4.0__@bufbuild+protobuf@2.4.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.4.0_@bufbuild+protobuf@2.4.0": {
-      "integrity": "sha512-0fHcaADd+GKM0I/koIQpmKg7b+QL18bXlggTUYEAlMFzsd4zN/ApG3235hdUcRyhrAOAItTXxh8ZAV/nNd43Gg==",
-      "dependencies": [
-        "@bufbuild/protobuf@1.10.0",
-        "@bufbuild/protoc-gen-es",
-        "@bufbuild/protoplugin@1.10.0_typescript@4.5.2",
+        "@bufbuild/protoplugin@1.10.1_typescript@4.5.2",
         "@connectrpc/connect"
       ],
       "optionalPeers": [
@@ -169,46 +74,28 @@
     "@standard-schema/spec@1.0.0": {
       "integrity": "sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA=="
     },
-    "@types/node@22.5.4": {
-      "integrity": "sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==",
-      "dependencies": [
-        "undici-types"
-      ]
-    },
-    "@typescript/vfs@1.6.0_typescript@4.5.2": {
-      "integrity": "sha512-hvJUjNVeBMp77qPINuUvYXj4FyWeeMMKZkxEATEU3hqBAQ7qdTBCUFT7Sp0Zu0faeEtFf+ldXxMEDr/bk73ISg==",
+    "@typescript/vfs@1.6.1_typescript@4.5.2": {
+      "integrity": "sha512-JwoxboBh7Oz1v38tPbkrZ62ZXNHAk9bJ7c9x0eI5zBfBnBYGhURdbnh7Z4smN/MV48Y5OCcZb58n972UtbazsA==",
       "dependencies": [
         "debug",
         "typescript@4.5.2"
       ]
     },
-    "@typescript/vfs@1.6.0_typescript@5.4.5": {
-      "integrity": "sha512-hvJUjNVeBMp77qPINuUvYXj4FyWeeMMKZkxEATEU3hqBAQ7qdTBCUFT7Sp0Zu0faeEtFf+ldXxMEDr/bk73ISg==",
+    "@typescript/vfs@1.6.1_typescript@5.4.5": {
+      "integrity": "sha512-JwoxboBh7Oz1v38tPbkrZ62ZXNHAk9bJ7c9x0eI5zBfBnBYGhURdbnh7Z4smN/MV48Y5OCcZb58n972UtbazsA==",
       "dependencies": [
         "debug",
         "typescript@5.4.5"
       ]
     },
-    "debug@4.4.0": {
-      "integrity": "sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==",
+    "debug@4.4.1": {
+      "integrity": "sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==",
       "dependencies": [
         "ms"
       ]
     },
-    "effect@3.10.16": {
-      "integrity": "sha512-7d69IMsIgnJKzopBMHdZR7d3JWwdHgzaIyIXif5jpu8gtQujIrIpgABXXMe+47KNSuS5k12s9dMRL3B8Y9s+Sw==",
-      "dependencies": [
-        "fast-check"
-      ]
-    },
-    "effect@3.12.9": {
-      "integrity": "sha512-u3PsO0KWtCTO56yGGYaa8RLOccE6Kbeb4UotS/ArAG/tqAyf0x3JF3WaaklhnxJtt67P6SktLmwRPT4hiuhKEA==",
-      "dependencies": [
-        "fast-check"
-      ]
-    },
-    "effect@3.15.0": {
-      "integrity": "sha512-l8eJAz1DVEUg2zgmLR9JGYRc1YrKcf/UziC41pIxUHfMgNKMt/Qg8ENhFvbyc9m6Nhrr/Zkg9XtvU7024KU32A==",
+    "effect@3.16.12": {
+      "integrity": "sha512-N39iBk0K71F9nb442TLbTkjl24FLUzuvx2i1I2RsEAQsdAdUTuUoW0vlfUXgkMTUOnYqKnWcFfqw4hK4Pw27hg==",
       "dependencies": [
         "@standard-schema/spec",
         "fast-check"
@@ -233,22 +120,19 @@
     "typescript@5.4.5": {
       "integrity": "sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==",
       "bin": true
-    },
-    "undici-types@6.19.8": {
-      "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw=="
     }
   },
   "workspace": {
     "dependencies": [
-      "npm:@bufbuild/protobuf@^2.4.0",
+      "npm:@bufbuild/protobuf@^2.6.0",
       "npm:@connectrpc/connect-node@2.0.2",
       "npm:@connectrpc/connect@2.0.2",
-      "npm:effect@3.15.0"
+      "npm:effect@3.16.12"
     ],
     "packageJson": {
       "dependencies": [
-        "npm:@bufbuild/protobuf@^2.4.0",
-        "npm:@bufbuild/protoc-gen-es@^2.4.0",
+        "npm:@bufbuild/protobuf@^2.6.0",
+        "npm:@bufbuild/protoc-gen-es@^2.6.0",
         "npm:@connectrpc/connect-node@^2.0.2",
         "npm:@connectrpc/connect@^2.0.2",
         "npm:@connectrpc/protoc-gen-connect-es@^1.6.1"

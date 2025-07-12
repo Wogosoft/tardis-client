@@ -1,5 +1,4 @@
-import { Data, Schema } from "@effect";
-import { omit } from "@effect/Struct";
+import { Data, Schema, Struct } from "@effect";
 
 type RawError = {
     rawMessage: string,
@@ -11,7 +10,7 @@ type Input = RawError & {
     code: unknown
 }
 
-const omitCode = (input: Input) => omit("code")(input)
+const omitCode = (input: Input) => Struct.omit("code")(input)
 
 class GrpcError extends Data.Error<RawError>{}
 
