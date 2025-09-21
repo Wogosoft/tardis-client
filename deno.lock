@@ -1,6 +1,11 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/assert@^1.0.13": "1.0.14",
+    "jsr:@std/assert@^1.0.14": "1.0.14",
+    "jsr:@std/expect@*": "1.0.17",
+    "jsr:@std/internal@^1.0.10": "1.0.10",
+    "jsr:@std/testing@*": "1.0.15",
     "npm:@bufbuild/protobuf@^2.6.0": "2.6.0",
     "npm:@bufbuild/protoc-gen-es@^2.6.0": "2.6.0_@bufbuild+protobuf@2.6.0",
     "npm:@connectrpc/connect-node@2.0.2": "2.0.2_@bufbuild+protobuf@2.6.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.6.0",
@@ -9,6 +14,37 @@
     "npm:@connectrpc/connect@^2.0.2": "2.0.2_@bufbuild+protobuf@2.6.0",
     "npm:@connectrpc/protoc-gen-connect-es@^1.6.1": "1.6.1_@bufbuild+protoc-gen-es@2.6.0__@bufbuild+protobuf@2.6.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.6.0_@bufbuild+protobuf@2.6.0",
     "npm:effect@3.16.12": "3.16.12"
+  },
+  "jsr": {
+    "@std/assert@1.0.14": {
+      "integrity": "68d0d4a43b365abc927f45a9b85c639ea18a9fab96ad92281e493e4ed84abaa4",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/expect@1.0.16": {
+      "integrity": "ceeef6dda21f256a5f0f083fcc0eaca175428b523359a9b1d9b3a1df11cc7391"
+    },
+    "@std/expect@1.0.17": {
+      "integrity": "316b47dd65c33e3151344eb3267bf42efba17d1415425f07ed96185d67fc04d9",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.14",
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.10": {
+      "integrity": "e3be62ce42cab0e177c27698e5d9800122f67b766a0bea6ca4867886cbde8cf7"
+    },
+    "@std/testing@1.0.12": {
+      "integrity": "fec973a45ccc62c540fb89296199051fee142409138fd6e3eae409366bcd4720"
+    },
+    "@std/testing@1.0.15": {
+      "integrity": "a490169f5ccb0f3ae9c94fbc69d2cd43603f2cffb41713a85f99bbb0e3087cbc",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.13",
+        "jsr:@std/internal"
+      ]
+    }
   },
   "npm": {
     "@bufbuild/protobuf@1.10.1": {

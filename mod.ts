@@ -33,6 +33,9 @@ import type { CommonTransportOptions } from "@connectrpc/connect/protocol";
 import { type ClientError, refineError } from "./errors.ts";
 export * as Common from "@tardis/common/common_messages_pb.ts";
 export { ParkingManagementMessages };
+export * as ReportingCommon from "@tardis-reporting/common/common_messages_pb.ts";
+import { ParkingReportingService } from "@tardis-reporting/parking/parking_service_pb.ts"
+import type * as ParkingReportingMessages from "@tardis-reporting/parking/parking_messages_pb.ts";
 
 export declare namespace TransportLayer {
     type Shape = {
@@ -542,6 +545,49 @@ export class Parking extends ParkingSuper {
     static Id = "wogo.tardis.parking.v1.ParkingService" as const;
 }
 
+export declare namespace Reports.Messages {
+    type AppliedDiscount = ParkingReportingMessages.AppliedDiscount
+    type BillingData = ParkingReportingMessages.BillingData
+    type GenerateReportFileRequest = ParkingReportingMessages.GenerateReportFileRequest
+    type GenerateReportFileResponse = ParkingReportingMessages.GenerateReportFileResponse
+    type GetParkingReportsRequest = ParkingReportingMessages.GetParkingReportsRequest
+    type GetParkingReportsResponse = ParkingReportingMessages.GetParkingReportsResponse
+    type GetReportStatusRequest = ParkingReportingMessages.GetReportStatusRequest
+    type GetReportStatusResponse = ParkingReportingMessages.GetReportStatusResponse
+    type PaymentData = ParkingReportingMessages.PaymentData
+    type ReservationData = ParkingReportingMessages.ReservationData
+}
+
+const ReportsSuper: EffectTagType<
+    Reports,
+    "@clients/Reports",
+    ClientProxy<typeof ParkingReportingService>
+> = Effect.Tag("@clients/Reports")<
+    Reports,
+    ClientProxy<typeof ParkingReportingService>
+>();
+
+export class Reports extends ReportsSuper {
+    static get ServiceDefinition(): typeof ParkingReportingService {
+        return ParkingReportingService;
+    }
+    static Raw = (tx: Transport): Client<typeof ParkingReportingService> => 
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof ParkingReportingService> = 
+        makePartialBuilder(ParkingReportingService)
+    static Mock: PartialMockBuilder<typeof ParkingReportingService> = 
+        makePartialMockBuilder(ParkingReportingService)
+    static Stub: StubBuilder<typeof ParkingReportingService> = 
+        makeClientStubBuilder(ParkingReportingService)
+    static Effect: ClientEffect<typeof ParkingReportingService> = 
+        makeClient(ParkingReportingService);
+    static Layer: ProxyLayer<Reports> = 
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<Reports> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "Reports" as const
+    static Id = "wogo.tardis.parking.v1.ParkingReportingService" as const;
+}
 
 export const ServiceNames = [
     "Parking",
@@ -549,6 +595,7 @@ export const ServiceNames = [
     "SubscriptionManagement",
     "UserAuthenticator",
     "UserManagement",
+    "Reports"
 ] as const
 
 export type ServiceName = typeof ServiceNames[number];
@@ -559,6 +606,7 @@ export const ServiceIds = {
     SubscriptionManagement: SubscriptionManagement.Id,
     UserAuthenticator: UserAuthenticator.Id,
     UserManagement: UserManagement.Id,
+    Reports: Reports.Id,
 } as const
 
 export type ServiceId = typeof ServiceIds[keyof typeof ServiceIds];
@@ -634,6 +682,7 @@ export declare namespace TardisTransports {
         SubscriptionManagement: TransportOptions,
         UserAuthenticator: TransportOptions,
         UserManagement: TransportOptions,
+        Reports: TransportOptions,
     }
 
     type Shape = {
@@ -642,6 +691,7 @@ export declare namespace TardisTransports {
         SubscriptionManagement: Option.Option<Transport>,
         UserAuthenticator: Option.Option<Transport>,
         UserManagement: Option.Option<Transport>,
+        Reports: Option.Option<Transport>,
     }
 }
 
@@ -693,6 +743,7 @@ export class TardisTransports extends TardisTransportsSuper {
             SubscriptionManagement: { kind: "empty" },
             UserAuthenticator: { kind: "empty" },
             UserManagement: { kind: "empty" },
+            Reports: { kind: "empty" },
             ...hosts,
         })
     }
@@ -711,11 +762,13 @@ export declare namespace Heartbeat {
         checkSubscriptionManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         checkUserAuthenticator: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         checkUserManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkReports: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         watchParking: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchParkingManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchSubscriptionManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchUserAuthenticator: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchUserManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchReports: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
     }
 }
 
@@ -791,6 +844,7 @@ export declare namespace TardisClients {
         SubscriptionManagement: Option.Option<ClientProxy<typeof SubscriptionManagement.ServiceDefinition>>,
         UserAuthenticator: Option.Option<ClientProxy<typeof UserAuthenticator.ServiceDefinition>>,
         UserManagement: Option.Option<ClientProxy<typeof UserManagement.ServiceDefinition>>,
+        Reports: Option.Option<ClientProxy<typeof Reports.ServiceDefinition>>,
     }
 }
 
@@ -830,6 +884,7 @@ export class TardisClients extends TardisClientsSuper {
             SubscriptionManagement: SubscriptionManagement.ServiceDefinition,
             UserAuthenticator: UserAuthenticator.ServiceDefinition,
             UserManagement: UserManagement.ServiceDefinition,
+            Reports: Reports.ServiceDefinition,
         } as const;
 
         const clients = pipe(

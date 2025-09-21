@@ -7,5 +7,6 @@ plugins:
     - import_extension=ts
 inputs:
   - module: buf.build/wogo/tardis:main
+  - module: buf.build/wogo/tardis-reporting:main
   - module: buf.build/grpc/grpc:9327911dce6e4b51a37ad5e93578c833
 clean: true
