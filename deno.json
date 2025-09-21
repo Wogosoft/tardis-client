@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0-alpha",
+  "version": "2.2.0-alpha.1",
   "name": "@wogo/tardis-client",
   "license": "GPL-3.0-only",
   "exports": {
