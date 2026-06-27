@@ -34,6 +34,19 @@ import { type ClientError, refineError } from "./errors.ts";
 export * as Common from "@tardis/common/common_messages_pb.ts";
 export { ParkingManagementMessages };
 
+import { CustomerManagementService } from "@tardis/management/customer_service_pb.ts"
+import * as CustomerManagementMessages from "@tardis/management/customer_messages_pb.ts"
+import { OrganizationManagementService } from "@tardis/management/organization_service_pb.ts"
+import * as OrganizationManagementMessages from "@tardis/management/organization_messages_pb.ts"
+import { PricingManagementService } from "@tardis/management/pricing_service_pb.ts"
+import * as PricingManagementMessages from "@tardis/management/pricing_messages_pb.ts"
+
+export { 
+    CustomerManagementMessages,
+    OrganizationManagementMessages,
+    PricingManagementMessages
+}
+
 export declare namespace TransportLayer {
     type Shape = {
         tx: Transport
@@ -542,6 +555,99 @@ export class Parking extends ParkingSuper {
     static Id = "wogo.tardis.parking.v1.ParkingService" as const;
 }
 
+const CustomerManagementSuper: EffectTagType<
+    CustomerManagement,
+    "@clients/CustomerManagement",
+    ClientProxy<typeof CustomerManagementService>
+> = Effect.Tag("@clients/CustomerManagement")<
+    CustomerManagement,
+    ClientProxy<typeof CustomerManagementService>
+>()
+
+export class CustomerManagement extends CustomerManagementSuper {
+    static get ServiceDefinition(): typeof CustomerManagementService {
+        return CustomerManagementService
+    }
+    static Raw = (tx: Transport): Client<typeof CustomerManagementService> => 
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof CustomerManagementService> = 
+        makePartialBuilder(CustomerManagementService)
+    static Mock: PartialMockBuilder<typeof CustomerManagementService> = 
+        makePartialMockBuilder(CustomerManagementService)
+    static Stub: StubBuilder<typeof CustomerManagementService> = 
+        makeClientStubBuilder(CustomerManagementService)
+    static Effect: ClientEffect<typeof CustomerManagementService> = 
+        makeClient(CustomerManagementService);
+    static Layer: ProxyLayer<CustomerManagement> = 
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<CustomerManagement> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "CustomerManagement" as const
+    static Id = "wogo.tardis.management.v1.CustomerManagementService" as const;
+}
+
+const OrganizationManagementSuper: EffectTagType<
+    OrganizationManagement,
+    "@clients/OrganizationManagement",
+    ClientProxy<typeof OrganizationManagementService>
+> = Effect.Tag("@clients/OrganizationManagement")<
+    OrganizationManagement,
+    ClientProxy<typeof OrganizationManagementService>
+>()
+
+export class OrganizationManagement extends OrganizationManagementSuper {
+    static get ServiceDefinition(): typeof OrganizationManagementService {
+        return OrganizationManagementService
+    }
+    static Raw = (tx: Transport): Client<typeof OrganizationManagementService> => 
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof OrganizationManagementService> = 
+        makePartialBuilder(OrganizationManagementService)
+    static Mock: PartialMockBuilder<typeof OrganizationManagementService> = 
+        makePartialMockBuilder(OrganizationManagementService)
+    static Stub: StubBuilder<typeof OrganizationManagementService> = 
+        makeClientStubBuilder(OrganizationManagementService)
+    static Effect: ClientEffect<typeof OrganizationManagementService> = 
+        makeClient(OrganizationManagementService);
+    static Layer: ProxyLayer<OrganizationManagement> = 
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<OrganizationManagement> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "OrganizationManagement" as const
+    static Id = "wogo.tardis.management.v1.OrganizationManagementService" as const;
+}
+
+const PricingManagementSuper: EffectTagType<
+    PricingManagement,
+    "@clients/PricingManagement",
+    ClientProxy<typeof PricingManagementService>
+> = Effect.Tag("@clients/PricingManagement")<
+    PricingManagement,
+    ClientProxy<typeof PricingManagementService>
+>()
+
+export class PricingManagement extends PricingManagementSuper {
+    static get ServiceDefinition(): typeof PricingManagementService {
+        return PricingManagementService
+    }
+    static Raw = (tx: Transport): Client<typeof PricingManagementService> => 
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof PricingManagementService> = 
+        makePartialBuilder(PricingManagementService)
+    static Mock: PartialMockBuilder<typeof PricingManagementService> = 
+        makePartialMockBuilder(PricingManagementService)
+    static Stub: StubBuilder<typeof PricingManagementService> = 
+        makeClientStubBuilder(PricingManagementService)
+    static Effect: ClientEffect<typeof PricingManagementService> = 
+        makeClient(PricingManagementService);
+    static Layer: ProxyLayer<PricingManagement> = 
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<PricingManagement> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "PricingManagement" as const
+    static Id = "wogo.tardis.management.v1.PricingManagementService" as const;
+}
+
 
 export const ServiceNames = [
     "Parking",
@@ -549,6 +655,9 @@ export const ServiceNames = [
     "SubscriptionManagement",
     "UserAuthenticator",
     "UserManagement",
+    "CustomerManagement",
+    "OrganizationManagement",
+    "PricingManagement",
 ] as const
 
 export type ServiceName = typeof ServiceNames[number];
@@ -559,6 +668,9 @@ export const ServiceIds = {
     SubscriptionManagement: SubscriptionManagement.Id,
     UserAuthenticator: UserAuthenticator.Id,
     UserManagement: UserManagement.Id,
+    CustomerManagement: CustomerManagement.Id,
+    OrganizationManagement: OrganizationManagement.Id,
+    PricingManagement: PricingManagement.Id,
 } as const
 
 export type ServiceId = typeof ServiceIds[keyof typeof ServiceIds];
@@ -634,6 +746,9 @@ export declare namespace TardisTransports {
         SubscriptionManagement: TransportOptions,
         UserAuthenticator: TransportOptions,
         UserManagement: TransportOptions,
+        CustomerManagement: TransportOptions,
+        OrganizationManagement: TransportOptions,
+        PricingManagement: TransportOptions,
     }
 
     type Shape = {
@@ -642,6 +757,9 @@ export declare namespace TardisTransports {
         SubscriptionManagement: Option.Option<Transport>,
         UserAuthenticator: Option.Option<Transport>,
         UserManagement: Option.Option<Transport>,
+        CustomerManagement: Option.Option<Transport>,
+        OrganizationManagement: Option.Option<Transport>,
+        PricingManagement: Option.Option<Transport>,
     }
 }
 
@@ -693,6 +811,9 @@ export class TardisTransports extends TardisTransportsSuper {
             SubscriptionManagement: { kind: "empty" },
             UserAuthenticator: { kind: "empty" },
             UserManagement: { kind: "empty" },
+            CustomerManagement: { kind: "empty" },
+            OrganizationManagement: { kind: "empty" },
+            PricingManagement: { kind: "empty" },
             ...hosts,
         })
     }
@@ -711,11 +832,17 @@ export declare namespace Heartbeat {
         checkSubscriptionManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         checkUserAuthenticator: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         checkUserManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkCustomerManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkOrganizationManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkPricingManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         watchParking: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchParkingManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchSubscriptionManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchUserAuthenticator: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchUserManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchCustomerManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchOrganizationManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchPricingManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
     }
 }
 
@@ -791,6 +918,9 @@ export declare namespace TardisClients {
         SubscriptionManagement: Option.Option<ClientProxy<typeof SubscriptionManagement.ServiceDefinition>>,
         UserAuthenticator: Option.Option<ClientProxy<typeof UserAuthenticator.ServiceDefinition>>,
         UserManagement: Option.Option<ClientProxy<typeof UserManagement.ServiceDefinition>>,
+        CustomerManagement: Option.Option<ClientProxy<typeof CustomerManagement.ServiceDefinition>>,
+        OrganizationManagement: Option.Option<ClientProxy<typeof OrganizationManagement.ServiceDefinition>>,
+        PricingManagement: Option.Option<ClientProxy<typeof PricingManagement.ServiceDefinition>>,
     }
 }
 
@@ -830,6 +960,9 @@ export class TardisClients extends TardisClientsSuper {
             SubscriptionManagement: SubscriptionManagement.ServiceDefinition,
             UserAuthenticator: UserAuthenticator.ServiceDefinition,
             UserManagement: UserManagement.ServiceDefinition,
+            CustomerManagement: CustomerManagement.ServiceDefinition,
+            OrganizationManagement: OrganizationManagement.ServiceDefinition,
+            PricingManagement: PricingManagement.ServiceDefinition,
         } as const;
 
         const clients = pipe(

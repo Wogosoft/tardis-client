@@ -8,7 +8,7 @@
     "npm:@connectrpc/connect@2.0.2": "2.0.2_@bufbuild+protobuf@2.6.0",
     "npm:@connectrpc/connect@^2.0.2": "2.0.2_@bufbuild+protobuf@2.6.0",
     "npm:@connectrpc/protoc-gen-connect-es@^1.6.1": "1.6.1_@bufbuild+protoc-gen-es@2.6.0__@bufbuild+protobuf@2.6.0_@connectrpc+connect@2.0.2__@bufbuild+protobuf@2.6.0_@bufbuild+protobuf@2.6.0",
-    "npm:effect@3.16.12": "3.16.12"
+    "npm:effect@3.19.17": "3.19.17"
   },
   "npm": {
     "@bufbuild/protobuf@1.10.1": {
@@ -71,14 +71,13 @@
       ],
       "bin": true
     },
-    "@standard-schema/spec@1.0.0": {
-      "integrity": "sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA=="
+    "@standard-schema/spec@1.1.0": {
+      "integrity": "sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w=="
     },
     "@typescript/vfs@1.6.1_typescript@4.5.2": {
       "integrity": "sha512-JwoxboBh7Oz1v38tPbkrZ62ZXNHAk9bJ7c9x0eI5zBfBnBYGhURdbnh7Z4smN/MV48Y5OCcZb58n972UtbazsA==",
       "dependencies": [
-        "debug",
-        "typescript@4.5.2"
+        "debug"
       ]
     },
     "@typescript/vfs@1.6.1_typescript@5.4.5": {
@@ -94,8 +93,8 @@
         "ms"
       ]
     },
-    "effect@3.16.12": {
-      "integrity": "sha512-N39iBk0K71F9nb442TLbTkjl24FLUzuvx2i1I2RsEAQsdAdUTuUoW0vlfUXgkMTUOnYqKnWcFfqw4hK4Pw27hg==",
+    "effect@3.19.17": {
+      "integrity": "sha512-MChgn9z0y3KJ2DJ+VsZt1bdVDJ0bDIZt9zm4s3iPpRLzgcEGDOIP8pwADjAWifaP0S672nlRE5rZPBbyDcjn1g==",
       "dependencies": [
         "@standard-schema/spec",
         "fast-check"
@@ -127,7 +126,7 @@
       "npm:@bufbuild/protobuf@^2.6.0",
       "npm:@connectrpc/connect-node@2.0.2",
       "npm:@connectrpc/connect@2.0.2",
-      "npm:effect@3.16.12"
+      "npm:effect@3.19.17"
     ],
     "packageJson": {
       "dependencies": [
