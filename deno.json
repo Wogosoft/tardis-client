@@ -1,5 +1,5 @@
 {
-  "version": "2.3.1",
+  "version": "2.4.0",
   "name": "@wogo/tardis-client",
   "license": "GPL-3.0-only",
   "exports": {
@@ -7,7 +7,7 @@
     "./errors": "./errors.ts"
   },
   "tasks": {
-    "test": "deno test mod.spec.ts",
+    "test": "deno test --allow-env mod.spec.ts",
     "sandbox": "deno run -A ./sandbox.ts"
   },
   "publish": {
@@ -24,6 +24,12 @@
     "@tardis/common/": "./gen/wogo/tardis/common/v1/",
     "@tardis/management/": "./gen/wogo/tardis/management/v1/",
     "@tardis/parking/": "./gen/wogo/tardis/parking/v1/",
+    "@tardis/audit/": "./gen/wogo/tardis/audit/v1/",
+    "@tardis/finance/": "./gen/wogo/tardis/finance/v1/",
+    "@tardis/heartbeat/": "./gen/wogo/tardis/heartbeat/v1/",
+    "@tardis/notification/": "./gen/wogo/tardis/notification/v1/",
+    "@tardis/payroll/": "./gen/wogo/tardis/payroll/v1/",
+    "@tardis/workforce/": "./gen/wogo/tardis/workforce/v1/",
     "@tardis/health/": "./gen/grpc/health/v1/",
     "@bufbuild/protobuf": "npm:@bufbuild/protobuf@^2.6.0",
     "@connectrpc/connect" : "npm:@connectrpc/connect@2.0.2",
