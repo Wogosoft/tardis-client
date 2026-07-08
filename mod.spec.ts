@@ -3,7 +3,7 @@ import { expect } from "jsr:@std/expect";
 import { UserAuthenticator, wrapClient } from "./mod.ts";
 import type { CallOptions, Client } from "@connectrpc/connect";
 import { UserAuthenticatorService } from "@tardis/authenticator/user_service_pb.ts"
-import type { LoginRequest, LoginResponse, LogoutRequest, LogoutResponse, AuthToken, ValidateAuthRequest, ValidateAuthResponse } from "./gen/wogo/tardis/authenticator/v1/user_messages_pb.ts";
+import type { LoginRequest, LoginResponse, LogoutRequest, LogoutResponse, AuthToken, ValidateAuthRequest, ValidateAuthResponse, RefreshTokenResponse, ProvisionTOTPSeedResponse, RotateTOTPSeedResponse } from "./gen/wogo/tardis/authenticator/v1/user_messages_pb.ts";
 import { Effect } from "@effect";
 
 describe("Client proxy", () => {
@@ -11,12 +11,16 @@ describe("Client proxy", () => {
         login: "wogo.tardis.authenticator.v1.LoginResponse",
         logout: "wogo.tardis.authenticator.v1.LogoutResponse",
         validateAuth: "wogo.tardis.authenticator.v1.ValidateAuthResponse",
+        refreshToken: "wogo.tardis.authenticator.v1.RefreshTokenResponse",
+        provisionTOTPSeed: "wogo.tardis.authenticator.v1.ProvisionTOTPSeedResponse",
+        rotateTOTPSeed: "wogo.tardis.authenticator.v1.RotateTOTPSeedResponse",
     } as const
 
     const ClientStub = {
         login: function (_request: LoginRequest | { readonly $typeName?: undefined; username?: string | undefined; password?: string | undefined; }, _options?: CallOptions): Promise<LoginResponse> {
           return Promise.resolve({
-              $typeName: TypeNames.login
+              $typeName: TypeNames.login,
+              accessibleParkings: []
           })
         },
         logout: function (_request: LogoutRequest | { readonly $typeName?: undefined; authToken?: (AuthToken | { readonly $typeName?: undefined; token?: string | undefined; }) | undefined; }, _options?: CallOptions): Promise<LogoutResponse> {
@@ -29,8 +33,25 @@ describe("Client proxy", () => {
               $typeName: TypeNames.validateAuth,
               status: 1
           })
+        },
+        refreshToken: function (_request: unknown, _options?: CallOptions): Promise<RefreshTokenResponse> {
+          return Promise.resolve({
+              $typeName: TypeNames.refreshToken
+          })
+        },
+        provisionTOTPSeed: function (_request: unknown, _options?: CallOptions): Promise<ProvisionTOTPSeedResponse> {
+          return Promise.resolve({
+              $typeName: TypeNames.provisionTOTPSeed,
+              seed: ""
+          })
+        },
+        rotateTOTPSeed: function (_request: unknown, _options?: CallOptions): Promise<RotateTOTPSeedResponse> {
+          return Promise.resolve({
+              $typeName: TypeNames.rotateTOTPSeed,
+              seed: ""
+          })
         }
-    } as const; 
+    } as const;
     const MockClient: Client<typeof UserAuthenticatorService> = ClientStub;
 
     it("should forward to client and wrap in effect", async (t) => {

@@ -40,11 +40,35 @@ import { OrganizationManagementService } from "@tardis/management/organization_s
 import * as OrganizationManagementMessages from "@tardis/management/organization_messages_pb.ts"
 import { PricingManagementService } from "@tardis/management/pricing_service_pb.ts"
 import * as PricingManagementMessages from "@tardis/management/pricing_messages_pb.ts"
+import { ImpersonationService } from "@tardis/management/impersonation_service_pb.ts"
+import * as ImpersonationMessages from "@tardis/management/impersonation_messages_pb.ts"
+import { AuditLogService } from "@tardis/audit/audit_service_pb.ts"
+import * as AuditMessages from "@tardis/audit/audit_messages_pb.ts"
+import { FinanceService } from "@tardis/finance/finance_service_pb.ts"
+import * as FinanceMessages from "@tardis/finance/finance_messages_pb.ts"
+import { DeviceHeartbeatService } from "@tardis/heartbeat/heartbeat_service_pb.ts"
+import * as DeviceHeartbeatMessages from "@tardis/heartbeat/heartbeat_messages_pb.ts"
+import { NotificationService } from "@tardis/notification/notification_service_pb.ts"
+import * as NotificationMessages from "@tardis/notification/notification_messages_pb.ts"
+import { NotificationFeedService } from "@tardis/notification/notification_feed_service_pb.ts"
+import * as NotificationFeedMessages from "@tardis/notification/notification_feed_messages_pb.ts"
+import { PayrollService } from "@tardis/payroll/payroll_service_pb.ts"
+import * as PayrollMessages from "@tardis/payroll/payroll_messages_pb.ts"
+import { WorkforceService } from "@tardis/workforce/workforce_service_pb.ts"
+import * as WorkforceMessages from "@tardis/workforce/workforce_messages_pb.ts"
 
-export { 
+export {
     CustomerManagementMessages,
     OrganizationManagementMessages,
-    PricingManagementMessages
+    PricingManagementMessages,
+    ImpersonationMessages,
+    AuditMessages,
+    FinanceMessages,
+    DeviceHeartbeatMessages,
+    NotificationMessages,
+    NotificationFeedMessages,
+    PayrollMessages,
+    WorkforceMessages
 }
 
 export declare namespace TransportLayer {
@@ -649,6 +673,255 @@ export class PricingManagement extends PricingManagementSuper {
 }
 
 
+const ImpersonationSuper: EffectTagType<
+    Impersonation,
+    "@clients/Impersonation",
+    ClientProxy<typeof ImpersonationService>
+> = Effect.Tag("@clients/Impersonation")<
+    Impersonation,
+    ClientProxy<typeof ImpersonationService>
+>()
+
+export class Impersonation extends ImpersonationSuper {
+    static get ServiceDefinition(): typeof ImpersonationService {
+        return ImpersonationService
+    }
+    static Raw = (tx: Transport): Client<typeof ImpersonationService> =>
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof ImpersonationService> =
+        makePartialBuilder(ImpersonationService)
+    static Mock: PartialMockBuilder<typeof ImpersonationService> =
+        makePartialMockBuilder(ImpersonationService)
+    static Stub: StubBuilder<typeof ImpersonationService> =
+        makeClientStubBuilder(ImpersonationService)
+    static Effect: ClientEffect<typeof ImpersonationService> =
+        makeClient(ImpersonationService);
+    static Layer: ProxyLayer<Impersonation> =
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<Impersonation> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "Impersonation" as const
+    static Id = "wogo.tardis.management.v1.ImpersonationService" as const;
+}
+
+const AuditLogSuper: EffectTagType<
+    AuditLog,
+    "@clients/AuditLog",
+    ClientProxy<typeof AuditLogService>
+> = Effect.Tag("@clients/AuditLog")<
+    AuditLog,
+    ClientProxy<typeof AuditLogService>
+>()
+
+export class AuditLog extends AuditLogSuper {
+    static get ServiceDefinition(): typeof AuditLogService {
+        return AuditLogService
+    }
+    static Raw = (tx: Transport): Client<typeof AuditLogService> =>
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof AuditLogService> =
+        makePartialBuilder(AuditLogService)
+    static Mock: PartialMockBuilder<typeof AuditLogService> =
+        makePartialMockBuilder(AuditLogService)
+    static Stub: StubBuilder<typeof AuditLogService> =
+        makeClientStubBuilder(AuditLogService)
+    static Effect: ClientEffect<typeof AuditLogService> =
+        makeClient(AuditLogService);
+    static Layer: ProxyLayer<AuditLog> =
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<AuditLog> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "AuditLog" as const
+    static Id = "wogo.tardis.audit.v1.AuditLogService" as const;
+}
+
+const FinanceSuper: EffectTagType<
+    Finance,
+    "@clients/Finance",
+    ClientProxy<typeof FinanceService>
+> = Effect.Tag("@clients/Finance")<
+    Finance,
+    ClientProxy<typeof FinanceService>
+>()
+
+export class Finance extends FinanceSuper {
+    static get ServiceDefinition(): typeof FinanceService {
+        return FinanceService
+    }
+    static Raw = (tx: Transport): Client<typeof FinanceService> =>
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof FinanceService> =
+        makePartialBuilder(FinanceService)
+    static Mock: PartialMockBuilder<typeof FinanceService> =
+        makePartialMockBuilder(FinanceService)
+    static Stub: StubBuilder<typeof FinanceService> =
+        makeClientStubBuilder(FinanceService)
+    static Effect: ClientEffect<typeof FinanceService> =
+        makeClient(FinanceService);
+    static Layer: ProxyLayer<Finance> =
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<Finance> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "Finance" as const
+    static Id = "wogo.tardis.finance.v1.FinanceService" as const;
+}
+
+const DeviceHeartbeatSuper: EffectTagType<
+    DeviceHeartbeat,
+    "@clients/DeviceHeartbeat",
+    ClientProxy<typeof DeviceHeartbeatService>
+> = Effect.Tag("@clients/DeviceHeartbeat")<
+    DeviceHeartbeat,
+    ClientProxy<typeof DeviceHeartbeatService>
+>()
+
+export class DeviceHeartbeat extends DeviceHeartbeatSuper {
+    static get ServiceDefinition(): typeof DeviceHeartbeatService {
+        return DeviceHeartbeatService
+    }
+    static Raw = (tx: Transport): Client<typeof DeviceHeartbeatService> =>
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof DeviceHeartbeatService> =
+        makePartialBuilder(DeviceHeartbeatService)
+    static Mock: PartialMockBuilder<typeof DeviceHeartbeatService> =
+        makePartialMockBuilder(DeviceHeartbeatService)
+    static Stub: StubBuilder<typeof DeviceHeartbeatService> =
+        makeClientStubBuilder(DeviceHeartbeatService)
+    static Effect: ClientEffect<typeof DeviceHeartbeatService> =
+        makeClient(DeviceHeartbeatService);
+    static Layer: ProxyLayer<DeviceHeartbeat> =
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<DeviceHeartbeat> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "DeviceHeartbeat" as const
+    static Id = "wogo.tardis.heartbeat.v1.DeviceHeartbeatService" as const;
+}
+
+const NotificationSuper: EffectTagType<
+    Notification,
+    "@clients/Notification",
+    ClientProxy<typeof NotificationService>
+> = Effect.Tag("@clients/Notification")<
+    Notification,
+    ClientProxy<typeof NotificationService>
+>()
+
+export class Notification extends NotificationSuper {
+    static get ServiceDefinition(): typeof NotificationService {
+        return NotificationService
+    }
+    static Raw = (tx: Transport): Client<typeof NotificationService> =>
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof NotificationService> =
+        makePartialBuilder(NotificationService)
+    static Mock: PartialMockBuilder<typeof NotificationService> =
+        makePartialMockBuilder(NotificationService)
+    static Stub: StubBuilder<typeof NotificationService> =
+        makeClientStubBuilder(NotificationService)
+    static Effect: ClientEffect<typeof NotificationService> =
+        makeClient(NotificationService);
+    static Layer: ProxyLayer<Notification> =
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<Notification> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "Notification" as const
+    static Id = "wogo.tardis.notification.v1.NotificationService" as const;
+}
+
+const NotificationFeedSuper: EffectTagType<
+    NotificationFeed,
+    "@clients/NotificationFeed",
+    ClientProxy<typeof NotificationFeedService>
+> = Effect.Tag("@clients/NotificationFeed")<
+    NotificationFeed,
+    ClientProxy<typeof NotificationFeedService>
+>()
+
+export class NotificationFeed extends NotificationFeedSuper {
+    static get ServiceDefinition(): typeof NotificationFeedService {
+        return NotificationFeedService
+    }
+    static Raw = (tx: Transport): Client<typeof NotificationFeedService> =>
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof NotificationFeedService> =
+        makePartialBuilder(NotificationFeedService)
+    static Mock: PartialMockBuilder<typeof NotificationFeedService> =
+        makePartialMockBuilder(NotificationFeedService)
+    static Stub: StubBuilder<typeof NotificationFeedService> =
+        makeClientStubBuilder(NotificationFeedService)
+    static Effect: ClientEffect<typeof NotificationFeedService> =
+        makeClient(NotificationFeedService);
+    static Layer: ProxyLayer<NotificationFeed> =
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<NotificationFeed> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "NotificationFeed" as const
+    static Id = "wogo.tardis.notification.v1.NotificationFeedService" as const;
+}
+
+const PayrollSuper: EffectTagType<
+    Payroll,
+    "@clients/Payroll",
+    ClientProxy<typeof PayrollService>
+> = Effect.Tag("@clients/Payroll")<
+    Payroll,
+    ClientProxy<typeof PayrollService>
+>()
+
+export class Payroll extends PayrollSuper {
+    static get ServiceDefinition(): typeof PayrollService {
+        return PayrollService
+    }
+    static Raw = (tx: Transport): Client<typeof PayrollService> =>
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof PayrollService> =
+        makePartialBuilder(PayrollService)
+    static Mock: PartialMockBuilder<typeof PayrollService> =
+        makePartialMockBuilder(PayrollService)
+    static Stub: StubBuilder<typeof PayrollService> =
+        makeClientStubBuilder(PayrollService)
+    static Effect: ClientEffect<typeof PayrollService> =
+        makeClient(PayrollService);
+    static Layer: ProxyLayer<Payroll> =
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<Payroll> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "Payroll" as const
+    static Id = "wogo.tardis.payroll.v1.PayrollService" as const;
+}
+
+const WorkforceSuper: EffectTagType<
+    Workforce,
+    "@clients/Workforce",
+    ClientProxy<typeof WorkforceService>
+> = Effect.Tag("@clients/Workforce")<
+    Workforce,
+    ClientProxy<typeof WorkforceService>
+>()
+
+export class Workforce extends WorkforceSuper {
+    static get ServiceDefinition(): typeof WorkforceService {
+        return WorkforceService
+    }
+    static Raw = (tx: Transport): Client<typeof WorkforceService> =>
+        createClient(this.ServiceDefinition, tx);
+    static Partial: PartialBuilder<typeof WorkforceService> =
+        makePartialBuilder(WorkforceService)
+    static Mock: PartialMockBuilder<typeof WorkforceService> =
+        makePartialMockBuilder(WorkforceService)
+    static Stub: StubBuilder<typeof WorkforceService> =
+        makeClientStubBuilder(WorkforceService)
+    static Effect: ClientEffect<typeof WorkforceService> =
+        makeClient(WorkforceService);
+    static Layer: ProxyLayer<Workforce> =
+        Layer.effect(this, makeProxy(this.ServiceDefinition, this.Effect));
+    static Default: DefaultLayer<Workforce> = makeDefault(this);
+    static ask: Ask<typeof this.Name> = makeAsk(this);
+    static Name = "Workforce" as const
+    static Id = "wogo.tardis.workforce.v1.WorkforceService" as const;
+}
+
+
 export const ServiceNames = [
     "Parking",
     "ParkingManagement",
@@ -658,6 +931,14 @@ export const ServiceNames = [
     "CustomerManagement",
     "OrganizationManagement",
     "PricingManagement",
+    "Impersonation",
+    "AuditLog",
+    "Finance",
+    "DeviceHeartbeat",
+    "Notification",
+    "NotificationFeed",
+    "Payroll",
+    "Workforce",
 ] as const
 
 export type ServiceName = typeof ServiceNames[number];
@@ -671,6 +952,14 @@ export const ServiceIds = {
     CustomerManagement: CustomerManagement.Id,
     OrganizationManagement: OrganizationManagement.Id,
     PricingManagement: PricingManagement.Id,
+    Impersonation: Impersonation.Id,
+    AuditLog: AuditLog.Id,
+    Finance: Finance.Id,
+    DeviceHeartbeat: DeviceHeartbeat.Id,
+    Notification: Notification.Id,
+    NotificationFeed: NotificationFeed.Id,
+    Payroll: Payroll.Id,
+    Workforce: Workforce.Id,
 } as const
 
 export type ServiceId = typeof ServiceIds[keyof typeof ServiceIds];
@@ -749,6 +1038,14 @@ export declare namespace TardisTransports {
         CustomerManagement: TransportOptions,
         OrganizationManagement: TransportOptions,
         PricingManagement: TransportOptions,
+        Impersonation: TransportOptions,
+        AuditLog: TransportOptions,
+        Finance: TransportOptions,
+        DeviceHeartbeat: TransportOptions,
+        Notification: TransportOptions,
+        NotificationFeed: TransportOptions,
+        Payroll: TransportOptions,
+        Workforce: TransportOptions,
     }
 
     type Shape = {
@@ -760,6 +1057,14 @@ export declare namespace TardisTransports {
         CustomerManagement: Option.Option<Transport>,
         OrganizationManagement: Option.Option<Transport>,
         PricingManagement: Option.Option<Transport>,
+        Impersonation: Option.Option<Transport>,
+        AuditLog: Option.Option<Transport>,
+        Finance: Option.Option<Transport>,
+        DeviceHeartbeat: Option.Option<Transport>,
+        Notification: Option.Option<Transport>,
+        NotificationFeed: Option.Option<Transport>,
+        Payroll: Option.Option<Transport>,
+        Workforce: Option.Option<Transport>,
     }
 }
 
@@ -814,6 +1119,14 @@ export class TardisTransports extends TardisTransportsSuper {
             CustomerManagement: { kind: "empty" },
             OrganizationManagement: { kind: "empty" },
             PricingManagement: { kind: "empty" },
+            Impersonation: { kind: "empty" },
+            AuditLog: { kind: "empty" },
+            Finance: { kind: "empty" },
+            DeviceHeartbeat: { kind: "empty" },
+            Notification: { kind: "empty" },
+            NotificationFeed: { kind: "empty" },
+            Payroll: { kind: "empty" },
+            Workforce: { kind: "empty" },
             ...hosts,
         })
     }
@@ -835,6 +1148,14 @@ export declare namespace Heartbeat {
         checkCustomerManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         checkOrganizationManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         checkPricingManagement: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkImpersonation: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkAuditLog: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkFinance: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkDeviceHeartbeat: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkNotification: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkNotificationFeed: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkPayroll: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
+        checkWorkforce: (options?: CallOptions) => Effect.Effect<boolean, MissingClient>;
         watchParking: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchParkingManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchSubscriptionManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
@@ -843,6 +1164,14 @@ export declare namespace Heartbeat {
         watchCustomerManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchOrganizationManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
         watchPricingManagement: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchImpersonation: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchAuditLog: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchFinance: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchDeviceHeartbeat: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchNotification: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchNotificationFeed: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchPayroll: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
+        watchWorkforce: (options?: CallOptions) => Effect.Effect<Stream.Stream<HealthCheckResponse, ClientError>, MissingClient>;
     }
 }
 
@@ -921,6 +1250,14 @@ export declare namespace TardisClients {
         CustomerManagement: Option.Option<ClientProxy<typeof CustomerManagement.ServiceDefinition>>,
         OrganizationManagement: Option.Option<ClientProxy<typeof OrganizationManagement.ServiceDefinition>>,
         PricingManagement: Option.Option<ClientProxy<typeof PricingManagement.ServiceDefinition>>,
+        Impersonation: Option.Option<ClientProxy<typeof Impersonation.ServiceDefinition>>,
+        AuditLog: Option.Option<ClientProxy<typeof AuditLog.ServiceDefinition>>,
+        Finance: Option.Option<ClientProxy<typeof Finance.ServiceDefinition>>,
+        DeviceHeartbeat: Option.Option<ClientProxy<typeof DeviceHeartbeat.ServiceDefinition>>,
+        Notification: Option.Option<ClientProxy<typeof Notification.ServiceDefinition>>,
+        NotificationFeed: Option.Option<ClientProxy<typeof NotificationFeed.ServiceDefinition>>,
+        Payroll: Option.Option<ClientProxy<typeof Payroll.ServiceDefinition>>,
+        Workforce: Option.Option<ClientProxy<typeof Workforce.ServiceDefinition>>,
     }
 }
 
@@ -963,6 +1300,14 @@ export class TardisClients extends TardisClientsSuper {
             CustomerManagement: CustomerManagement.ServiceDefinition,
             OrganizationManagement: OrganizationManagement.ServiceDefinition,
             PricingManagement: PricingManagement.ServiceDefinition,
+            Impersonation: Impersonation.ServiceDefinition,
+            AuditLog: AuditLog.ServiceDefinition,
+            Finance: Finance.ServiceDefinition,
+            DeviceHeartbeat: DeviceHeartbeat.ServiceDefinition,
+            Notification: Notification.ServiceDefinition,
+            NotificationFeed: NotificationFeed.ServiceDefinition,
+            Payroll: Payroll.ServiceDefinition,
+            Workforce: Workforce.ServiceDefinition,
         } as const;
 
         const clients = pipe(
