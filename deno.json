@@ -1,5 +1,5 @@
 {
-  "version": "2.4.0",
+  "version": "2.5.0",
   "name": "@wogo/tardis-client",
   "license": "GPL-3.0-only",
   "exports": {
@@ -30,6 +30,7 @@
     "@tardis/notification/": "./gen/wogo/tardis/notification/v1/",
     "@tardis/payroll/": "./gen/wogo/tardis/payroll/v1/",
     "@tardis/workforce/": "./gen/wogo/tardis/workforce/v1/",
+    "@tardis/watchlist/": "./gen/wogo/tardis/watchlist/v1/",
     "@tardis/health/": "./gen/grpc/health/v1/",
     "@bufbuild/protobuf": "npm:@bufbuild/protobuf@^2.6.0",
     "@connectrpc/connect" : "npm:@connectrpc/connect@2.0.2",

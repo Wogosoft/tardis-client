@@ -32,6 +32,12 @@ import { Health, type HealthCheckResponse } from "@tardis/health/health_pb.ts";
 import type { CommonTransportOptions } from "@connectrpc/connect/protocol";
 import { type ClientError, refineError } from "./errors.ts";
 export * as Common from "@tardis/common/common_messages_pb.ts";
+// Watchlist enums reach consumers through the Parking service: EvaluateEntry answers
+// with a level, reason and subject type drawn from this module. Exported as values
+// rather than types only — a caller that has to turn 2 into "HARD" for a log or an
+// operator-facing message needs the enum object itself, and re-deriving that mapping
+// on the consumer side is exactly the kind of copy that drifts from the contract.
+export * as Watchlist from "@tardis/watchlist/watchlist_messages_pb.ts";
 export { ParkingManagementMessages };
 
 import { CustomerManagementService } from "@tardis/management/customer_service_pb.ts"
@@ -546,6 +552,8 @@ export declare namespace Parking.Messages {
     type PaymentConfirmationResponse = ParkingMessages.PaymentConfirmationResponse;
     type CheckoutRequest = ParkingMessages.CheckoutRequest;
     type CheckoutResponse = ParkingMessages.CheckoutResponse;
+    type EvaluateEntryRequest = ParkingMessages.EvaluateEntryRequest;
+    type EvaluateEntryResponse = ParkingMessages.EvaluateEntryResponse;
 }
 
 const ParkingSuper: EffectTagType<
