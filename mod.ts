@@ -554,6 +554,10 @@ export declare namespace Parking.Messages {
     type CheckoutResponse = ParkingMessages.CheckoutResponse;
     type EvaluateEntryRequest = ParkingMessages.EvaluateEntryRequest;
     type EvaluateEntryResponse = ParkingMessages.EvaluateEntryResponse;
+    type RecordEntryDecisionRequest = ParkingMessages.RecordEntryDecisionRequest;
+    type RecordEntryDecisionResponse = ParkingMessages.RecordEntryDecisionResponse;
+    type WatchlistOverrideInput = ParkingMessages.WatchlistOverrideInput;
+    type WatchlistDeclineInput = ParkingMessages.WatchlistDeclineInput;
 }
 
 const ParkingSuper: EffectTagType<
